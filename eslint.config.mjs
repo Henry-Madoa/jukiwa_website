@@ -5,7 +5,7 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  // Override default ignores of eslint-config-next.
+
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
@@ -13,6 +13,20 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+
+  {
+    rules: {
+      /*
+       * next/image is not used anywhere in this project, and that is deliberate.
+       *
+       * Every image here comes from Cloudinary, which already does what next/image does —
+       * resizing, format negotiation, and a CDN — and does it at the edge rather than in the
+       * Node process. lib/cloudinary.ts's `cdn()` asks for the exact size each place needs.
+       * Running both would mean paying for the work twice and losing Cloudinary's cache.
+       */
+      "@next/next/no-img-element": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
