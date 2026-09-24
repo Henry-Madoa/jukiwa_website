@@ -10,14 +10,11 @@ import { Prose } from '../prose.tsx';
 
 export const metadata: Metadata = {
   title: 'About us',
-  description: 'Jukiwa Credit Limited is the lending arm of the Jukiwa group — the same directors, offices and people as Jukiwa General Agencies Ltd.',
+  description: 'Jukiwa Credit Limited offers rent advances, building finance and property loans across Kenya and for Kenyans abroad.',
   alternates: { canonical: '/about' },
 };
 
-/*
- * The values are Jukiwa's own, as the group already publishes them — a subsidiary that invented
- * new ones would be telling borrowers it is a different company, which is exactly what it is not.
- */
+/* What Jukiwa Credit works by — each one written as something a borrower can hold us to. */
 const VALUES: [icon: 'users' | 'trend' | 'shield' | 'spark' | 'home', title: string, body: string][] = [
   ['users', 'Client-centric', 'We put our clients’ needs first, and work to exceed their expectations — including telling them when a loan is not right for them.'],
   ['trend', 'Expertise', 'Experienced people who value, manage, let and sell property every day, so they can lend against it with confidence.'],
@@ -33,7 +30,7 @@ export default async function AboutPage() {
   return (
     <>
       <PageHero
-        eyebrow={company.parent_name ? `A ${company.parent_name} company` : 'About us'}
+        eyebrow="About us"
         title={<>Property finance from the people who <span className="hl">manage property</span>.</>}
         lead={company.about_intro}
         crumbs={[{ href: '/about', label: 'About' }]}
@@ -61,17 +58,15 @@ export default async function AboutPage() {
                 <p>{company.vision}</p>
               </div>
             ) : null}
-            {company.parent_name ? (
-              <div className="tile" style={{ gridColumn: 'auto' }}>
-                <span className="tile-ico"><Icon name="building" size={24} /></span>
-                <h3>One group, one door</h3>
-                <p>
-                  Jukiwa Credit and {company.parent_name} share their directors, their {branches.length} offices and their staff in
-                  every satellite. Manage your building with one and finance it with the other — without ever changing who you deal with.
-                </p>
-                {company.parent_url ? <a href={company.parent_url} target="_blank" rel="noreferrer" className="link-arrow">Visit {company.parent_name} <Icon name="arrow" size={18} /></a> : null}
-              </div>
-            ) : null}
+            <div className="tile" style={{ gridColumn: 'auto' }}>
+              <span className="tile-ico"><Icon name="building" size={24} /></span>
+              <h3>{branches.length} offices, one team</h3>
+              <p>
+                From Kilimani to our branches, satellites and London office, you deal with the same people from your first call to
+                your last repayment.
+              </p>
+              <Link href="/branches" className="link-arrow">Find an office <Icon name="arrow" size={18} /></Link>
+            </div>
           </div>
         </div>
       </section>
@@ -80,7 +75,7 @@ export default async function AboutPage() {
         <div className="wrap">
           <div className="section-head center">
             <span className="eyebrow">What we stand for</span>
-            <h2 className="display-2">Five values, shared across the group.</h2>
+            <h2 className="display-2">Five values we work by.</h2>
           </div>
           <div className="bento" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))' }}>
             {VALUES.map(([icon, title, body]) => (
@@ -100,7 +95,7 @@ export default async function AboutPage() {
             <div className="section-head">
               <span className="eyebrow">Leadership</span>
               <h2 className="display-2">The people you will deal with.</h2>
-              <p className="lead">The same faces landlords already know from {company.parent_name ?? 'Jukiwa'} — now behind your finance, too.</p>
+              <p className="lead">Experienced people who know property — and who answer when you call.</p>
             </div>
             {groups.map((group) => (
               <div key={group.value} style={{ marginBottom: 40 }}>
@@ -128,7 +123,7 @@ export default async function AboutPage() {
       {testimonials.length ? (
         <section className="section section-soft">
           <div className="wrap">
-            <div className="section-head"><span className="eyebrow">Clients of the Jukiwa group</span><h2 className="display-2">In their words.</h2></div>
+            <div className="section-head"><span className="eyebrow">Our clients</span><h2 className="display-2">In their words.</h2></div>
             <div className="quotes">{testimonials.map((t) => <QuoteCard key={t.id} t={t} />)}</div>
           </div>
         </section>

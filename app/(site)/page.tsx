@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getFaqs, getPosts, getProducts, getSettings, getTestimonials, toTerms, getBranches } from '@/lib/site.ts';
 import { quote } from '@/lib/loan-math.ts';
 import { formatMoney, telHref } from '@/lib/format.ts';
+import { cdn } from '@/lib/cloudinary.ts';
 import { LoanCalculator } from './calculator.tsx';
 import { EnquiryForm } from './forms.tsx';
 import { FaqList, PostCard, ProductCard, QuoteCard } from './blocks.tsx';
@@ -61,10 +62,13 @@ export default async function HomePage() {
 
       {/* ------------------------------------------------------------------ hero */}
       <section className="hero">
-        <div className="hero-bg" aria-hidden="true"><span className="orb orb-1" /><span className="orb orb-2" /><span className="grid" /></div>
+        <div className="hero-bg" aria-hidden="true">
+          {company.hero_image_url ? <img className="hero-photo" src={cdn(company.hero_image_url, { width: 2400 })} alt="" fetchPriority="high" /> : null}
+          <span className="hero-shade" />
+          <span className="orb orb-1" /><span className="orb orb-2" /><span className="grid" />
+        </div>
         <div className="wrap hero-grid">
           <div>
-            {company.hero_kicker ? <span className="eyebrow">{company.hero_kicker}</span> : null}
             <h1 className="display-1"><Headline text={company.hero_headline ?? 'Unlock the money in your property.'} /></h1>
             <p className="lead">{company.hero_body}</p>
             <div className="btn-row">
@@ -96,7 +100,7 @@ export default async function HomePage() {
       <div className="stats-band">
         <div className="wrap">
           <div className="stats">
-            <div className="stat"><b>{company.stat_years ?? '24+'}</b><span>years managing Kenyan property, across the Jukiwa group</span></div>
+            <div className="stat"><b>{company.stat_years ?? '24+'}</b><span>years of experience in Kenyan property</span></div>
             <div className="stat"><b>10<em>×</em></b><span>your monthly rent, as a single advance</span></div>
             <div className="stat"><b>{company.stat_counties ?? '47'}</b><span>counties where we find, value and finance property</span></div>
             <div className="stat"><b>{company.indemnity_cover ?? 'KES 500M'}</b><span>professional indemnity cover on purchases</span></div>
@@ -210,7 +214,7 @@ export default async function HomePage() {
               <span className="tile-ico"><Icon name="home" size={24} /></span>
               <h3 style={{ fontSize: '1.6rem', color: '#fff' }}>We manage property every day — so we can lend against it with confidence.</h3>
               <p>
-                The Jukiwa group values, lets, manages and sells property across Kenya. That is why we can decide quickly, lend
+                We value, let, manage and sell property across Kenya. That is why we can decide quickly, lend
                 on the rent a building actually earns, and structure repayments around it — where a bank would only see a payslip.
               </p>
               <svg className="deco" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 24 24 9l18 15" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -218,7 +222,7 @@ export default async function HomePage() {
             <div className="tile span-2 gold" data-reveal="">
               <div className="big-num">{company.stat_years ?? '24+'}</div>
               <h3>years in Kenyan property</h3>
-              <p>Same directors and same offices as {company.parent_name ?? 'Jukiwa General Agencies'}.</p>
+              <p>Valuing, letting, managing and selling property across all 47 counties.</p>
             </div>
             <div className="tile" data-reveal="">
               <span className="tile-ico"><Icon name="shield" size={24} /></span>
@@ -238,7 +242,7 @@ export default async function HomePage() {
             <div className="tile span-3" data-reveal="">
               <span className="tile-ico"><Icon name="pin" size={24} /></span>
               <h3>{branches.length} offices you can walk into</h3>
-              <p>{branches.map((b) => b.town ?? b.name).join(' · ')} — every one shared with the Jukiwa group.</p>
+              <p>{branches.map((b) => b.town ?? b.name).join(' · ')} — walk into any of them.</p>
               <Link href="/branches" className="link-arrow">Find an office <Icon name="arrow" size={18} /></Link>
             </div>
             <div className="tile span-3" data-reveal="">
@@ -287,7 +291,7 @@ export default async function HomePage() {
         <section className="section">
           <div className="wrap">
             <div className="section-head">
-              <span className="eyebrow">Clients of the Jukiwa group</span>
+              <span className="eyebrow">Our clients</span>
               <h2 className="display-2">In their words.</h2>
             </div>
             <div className="quotes">

@@ -50,7 +50,6 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
         <p className="login-aside-foot">
           © {new Date().getFullYear()} {company.name}
-          {company.parent_name ? ` · A ${company.parent_name} company` : ''}
         </p>
       </aside>
 

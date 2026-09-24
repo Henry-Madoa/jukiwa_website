@@ -53,23 +53,16 @@ export default async function SettingsPage() {
               {text('founded_year', 'Founded', { max: 10 })}
             </div>
             {text('tagline', 'Tagline', { max: 200, placeholder: 'Property finance from the people who manage property.' })}
-            <div className="grid-2">
-              {text('parent_name', 'Parent company', { max: 160 })}
-              {text('parent_url', 'Parent company website', { type: 'url', max: 600 })}
-            </div>
           </div>
         </div>
 
         <div className="panel">
           <header><div><h2>The home page</h2><p>The first thing every visitor reads. Say what you lend, to whom, and why you.</p></div></header>
           <div className="body">
-            <div className="grid-2">
-              {text('hero_kicker', 'Small line above the headline', { max: 120 })}
-              {text('hero_headline', 'Headline', { max: 160 })}
-            </div>
+            {text('hero_headline', 'Headline', { max: 160 })}
             {prose('hero_body', 'The sentence under it', { max: 600 })}
             <div className="grid-2">
-              {text('stat_years', 'Years in property (group)', { max: 20, placeholder: '24+' })}
+              {text('stat_years', 'Years in property', { max: 20, placeholder: '24+' })}
               {text('stat_counties', 'Counties served', { max: 20, placeholder: '47' })}
             </div>
             <div className="grid-3">
@@ -184,7 +177,7 @@ export default async function SettingsPage() {
                 ) : null}
               </div>
               <div>
-                <ImageField name="hero_image" label="Social sharing picture (optional)" current={c.hero_image_url} hint="Shown when a page is shared on WhatsApp or Facebook." />
+                <ImageField name="hero_image" label="Home page background picture" current={c.hero_image_url} hint="The photograph behind the home page headline, also used when a page is shared on WhatsApp or Facebook. A wide landscape picture, at least 2000px across." />
                 {c.hero_image_url ? (
                   <div className="check-row"><input id="remove_hero" name="remove_hero" type="checkbox" value="1" /><label htmlFor="remove_hero">Remove it</label></div>
                 ) : null}

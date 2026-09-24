@@ -434,16 +434,16 @@ const colour = (value: unknown, label: string): string => {
 
 /** The text fields of the company profile, each with the longest value it will take. */
 const SETTING_TEXT: Record<string, number> = {
-  name: 160, short_name: 60, tagline: 200, parent_name: 160, founded_year: 10, registration_no: 80, licence_no: 120,
+  name: 160, short_name: 60, tagline: 200, founded_year: 10, registration_no: 80, licence_no: 120,
   licence_note: 400, physical_address: 300, postal_address: 120, city: 80, country: 80, phone_primary: 30,
-  phone_secondary: 30, office_hours: 200, paybill_no: 20, paybill_note: 200, hero_kicker: 120, hero_headline: 160,
+  phone_secondary: 30, office_hours: 200, paybill_no: 20, paybill_note: 200, hero_headline: 160,
   whatsapp_number: 30, diaspora_phone: 30, stat_years: 20, stat_clients: 20, stat_counties: 20, stat_turnaround: 30,
   indemnity_cover: 60,
 };
 const SETTING_PROSE: Record<string, number> = {
   about_intro: 600, about_story: 6_000, mission: 800, vision: 800, bank_details: 600, hero_body: 600,
 };
-const SETTING_URLS = ['parent_url', 'portal_url', 'facebook_url', 'instagram_url', 'x_url', 'youtube_url', 'tiktok_url', 'linkedin_url'];
+const SETTING_URLS = ['portal_url', 'facebook_url', 'instagram_url', 'x_url', 'youtube_url', 'tiktok_url', 'linkedin_url'];
 const SETTING_EMAILS = ['email', 'loans_email', 'diaspora_email'];
 
 export async function saveSettings(form: Record<string, unknown>, images: { logo?: string | null; hero?: string | null }, actor: Actor): Promise<void> {

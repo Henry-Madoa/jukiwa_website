@@ -91,8 +91,6 @@ export interface Settings {
   about_story: string | null;
   mission: string | null;
   vision: string | null;
-  parent_name: string | null;
-  parent_url: string | null;
   founded_year: string | null;
   registration_no: string | null;
   licence_no: string | null;
@@ -113,7 +111,6 @@ export interface Settings {
   currency_symbol: string;
   logo_url: string | null;
   hero_image_url: string | null;
-  hero_kicker: string | null;
   hero_headline: string | null;
   hero_body: string | null;
   brand_primary: string;

@@ -106,10 +106,10 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
     await run(
       `UPDATE web_setting SET
          name = @name, short_name = @short, tagline = @tagline, about_intro = @intro, about_story = @story,
-         mission = @mission, vision = @vision, parent_name = @parent, parent_url = @parentUrl, founded_year = @founded,
+         mission = @mission, vision = @vision, founded_year = @founded,
          physical_address = @address, postal_address = @postal, city = @city, country = 'Kenya', map_embed_url = @map,
          phone_primary = @phone1, phone_secondary = @phone2, email = @email, loans_email = @loansEmail, office_hours = @hours,
-         paybill_no = @paybill, paybill_note = @paybillNote, hero_kicker = @kicker, hero_headline = @headline, hero_body = @heroBody,
+         paybill_no = @paybill, paybill_note = @paybillNote, hero_image_url = @heroImage, hero_headline = @headline, hero_body = @heroBody,
          whatsapp_number = @whatsapp, diaspora_phone = @diasporaPhone, diaspora_email = @diasporaEmail,
          facebook_url = @facebook, instagram_url = @instagram, x_url = @x, youtube_url = @youtube,
          stat_years = @years, stat_counties = @counties, stat_turnaround = @turnaround, indemnity_cover = @indemnity,
@@ -119,15 +119,13 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
         name: 'Jukiwa Credit Limited',
         short: 'Jukiwa Credit',
         tagline: 'Property finance from the people who manage property.',
-        intro: 'Jukiwa Credit is the lending arm of the Jukiwa group — rent advances, building finance and property loans from a team that has managed Kenyan property for more than two decades.',
+        intro: 'Jukiwa Credit offers rent advances, building finance and property loans across Kenya — from a team that has managed Kenyan property for more than two decades.',
         story:
-          'For years, Jukiwa General Agencies Ltd has done something most property managers do not: it advances money to the landlords whose buildings it manages, and recovers it quietly from the rent it collects. Landlords used those advances to finish buildings, buy the next plot and reinvest in Kenya — many of them from London, Houston or Toronto.\n\n' +
-          'Jukiwa Credit Limited was formed to do that properly, at scale: a dedicated company for financing property across Kenya, with its own credit team, its own processes and the same people behind it. The directors are the same. The offices are the same — Kilimani headquarters, the branches and every satellite. The staff you already know at Jukiwa are the staff you will meet here.\n\n' +
+          'For years, our team has done something most property managers do not: advance money to the landlords whose buildings we manage, and recover it quietly from the rent we collect. Landlords used those advances to finish buildings, buy the next plot and reinvest in Kenya — many of them from London, Houston or Toronto.\n\n' +
+          'Jukiwa Credit Limited was formed to do that properly, at scale: a dedicated company for financing property across Kenya, with its own credit team and its own processes — at our Kilimani headquarters, our branches and every satellite.\n\n' +
           'What that means for a borrower is simple. We already understand property: we value it, manage it, let it and sell it every day. So we can lend against it with confidence, decide quickly, and structure repayments around the rent a building actually earns.',
         mission: 'To empower our clients to achieve their property dreams through finance that is fair, fast and transparent — delivered with expertise and integrity.',
         vision: 'To be Kenya’s most trusted property finance partner, at home and across the diaspora.',
-        parent: 'Jukiwa General Agencies Ltd',
-        parentUrl: 'https://www.jukiwa.co.ke',
         founded: '2026',
         address: 'Tetu Apartments, Block C, Room 5\nStatehouse Avenue, off Ralph Bunche Road\nKilimani',
         postal: 'P.O. Box 21481–00100',
@@ -140,7 +138,7 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
         hours: 'Monday to Friday, 8.00 am – 5.00 pm · Saturday, 9.00 am – 1.00 pm',
         paybill: '4224534',
         paybillNote: 'Account number: your loan number',
-        kicker: 'A Jukiwa General Agencies company',
+        heroImage: photo('1545324418-cc1a3fa10c00', 2400),
         headline: 'Unlock the money in your property.',
         heroBody: 'Rent advances of up to 10× your monthly rent, finance to finish your building, and loans to buy land or a home — from the team that has managed Kenyan property for over 24 years.',
         whatsapp: '+254 743 227 881',
@@ -169,13 +167,13 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
         'Tetu Apartments, Block C, Room 5\nStatehouse Avenue, off Ralph Bunche Road, Kilimani',
         '+254 207 851 999', 'info@jukiwa.co.ke', 'Mon–Fri 8.00 am – 5.00 pm · Sat 9.00 am – 1.00 pm',
         'https://www.google.com/maps?q=Ralph+Bunche+Road,+Kilimani,+Nairobi&output=embed',
-        'Head office for Jukiwa Credit and Jukiwa General Agencies. Credit officers are here every working day.',
+        'Our head office. Credit officers are here every working day.',
       ],
       [
         'Kitengela Branch', 'BRANCH', 'Kitengela', 'Kajiado', 'Kenya', null,
         '+254 743 227 881', 'info@jukiwa.co.ke', 'Mon–Fri 8.00 am – 5.00 pm',
         'https://www.google.com/maps?q=Kitengela,+Kajiado&output=embed',
-        'Shared with Jukiwa General Agencies. Call ahead and a credit officer will meet you at the branch.',
+        'Call ahead and a credit officer will meet you at the branch.',
       ],
       [
         'Nakuru Satellite', 'SATELLITE', 'Nakuru', 'Nakuru', 'Kenya', null,
@@ -215,7 +213,7 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
     for (const [name, title, category, portrait] of people) {
       await run(
         'INSERT INTO web_team (name, role_title, category, bio, photo_url, sort, is_published) VALUES (?,?,?,?,?,?,TRUE)',
-        name, title, category, 'Serves across the Jukiwa group — Jukiwa Credit and Jukiwa General Agencies.', portrait, sort++,
+        name, title, category, null, portrait, sort++,
       );
     }
     created.push(`${people.length} leadership profiles`);
@@ -247,7 +245,7 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
           'Real-time statements on the Jukiwa property management system',
         ],
         requirements: [
-          'A rental property managed by Jukiwa General Agencies — or one you are ready to submit for management',
+          'A rental property managed by Jukiwa — or one you are ready to submit for management',
           'Title deed or lease in your name',
           'National ID or passport, and KRA PIN',
           'A current tenancy schedule (rent roll)',
@@ -284,7 +282,7 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
         summary: 'Finance to buy land, a home or an income property anywhere in Kenya — with Jukiwa’s valuers, legal team and indemnity cover standing behind the purchase.',
         body:
           'Financing property acquisitions across Kenya is what Jukiwa Credit was founded to do. Whether it is a plot to build on, a family home or a block of flats that already earns rent, we can finance the purchase.\n\n' +
-          'Because the Jukiwa group values, manages and sells property every day, we can do what a bank cannot: help you find the property, check it properly, and finance it in one place. Purchases made through Jukiwa are protected by professional indemnity cover of up to KES 500 million.\n\n' +
+          'Because we value, manage and sell property every day, we can do what a bank cannot: help you find the property, check it properly, and finance it in one place. Purchases made through Jukiwa are protected by professional indemnity cover of up to KES 500 million.\n\n' +
           'Buying an income property? We can manage it for you from the day you take the keys, and structure your repayments around the rent it earns.',
         features: [
           'Land, homes and income-earning property anywhere in Kenya',
@@ -340,7 +338,7 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
         requirements: [
           'Title deed in your name',
           'National ID or passport, and KRA PIN',
-          'Property listed for sale with Jukiwa General Agencies',
+          'Property listed for sale with Jukiwa',
         ],
       },
       {
@@ -402,8 +400,8 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
   /* ----------------------------------------------------------------------- FAQs */
   if (await isEmpty('web_faq')) {
     const faqs: [category: string, question: string, answer: string][] = [
-      ['GENERAL', 'How is Jukiwa Credit related to Jukiwa General Agencies?',
-        'Jukiwa Credit Limited is a subsidiary of Jukiwa General Agencies Ltd, formed to finance property across Kenya. The two companies share their directors, their offices and their staff in every branch and satellite — so if you already know Jukiwa, you already know us.'],
+      ['GENERAL', 'Who is Jukiwa Credit?',
+        'Jukiwa Credit Limited is a Kenyan finance company dedicated to property: rent advances, building finance, purchase finance and loans secured on land. Our team has managed, valued and sold property across Kenya for more than two decades, and we lend from our Kilimani headquarters, our branches and our London diaspora office.'],
       ['GENERAL', 'Is my information safe with you?',
         'This website only ever asks for what a credit officer needs to call you back with a real answer. We never ask for your ID number, KRA PIN or bank statements online — those are collected in person, at a branch, into our lending system. See our privacy notice for the detail.'],
       ['GENERAL', 'How soon will someone contact me?',
@@ -459,10 +457,10 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
     const posts: [title: string, category: string, excerpt: string, body: string, image: string, age: number, pinned?: boolean][] = [
       [
         'Introducing Jukiwa Credit Limited', 'ANNOUNCEMENT',
-        'The Jukiwa group has launched a dedicated finance company — built on two decades of lending to the landlords it manages.',
-        'Jukiwa General Agencies Ltd is proud to introduce Jukiwa Credit Limited, a new subsidiary dedicated to financing property acquisitions across Kenya.\n\n' +
-        'For years the agency has advanced money to the landlords whose properties it manages, recovering it from the rent it collects. Those advances helped clients finish buildings, buy land and reinvest in Kenya from abroad. Jukiwa Credit brings that work into a company of its own, with a dedicated credit team and a clear structure.\n\n' +
-        'Nothing about who we are changes. Jukiwa Credit shares its directors with Jukiwa General Agencies, and its offices and staff in every branch and satellite. What changes is what we can offer: rent advances of up to ten times monthly rent, building advances to finish the last 25% of a project, finance to buy land and homes, and loans secured on the property you already own.\n\n' +
+        'A dedicated property finance company — built on two decades of lending to the landlords we manage for.',
+        'We are proud to introduce Jukiwa Credit Limited, a new company dedicated to financing property acquisitions across Kenya.\n\n' +
+        'For years our team has advanced money to the landlords whose properties it manages, recovering it from the rent it collects. Those advances helped clients finish buildings, buy land and reinvest in Kenya from abroad. Jukiwa Credit brings that work into a company of its own, with a dedicated credit team and a clear structure.\n\n' +
+        'Nothing about who we are changes — the same people, in the same offices in every branch and satellite. What changes is what we can offer: rent advances of up to ten times monthly rent, building advances to finish the last 25% of a project, finance to buy land and homes, and loans secured on the property you already own.\n\n' +
         'You can apply online in about five minutes, or visit us at our Kilimani headquarters.',
         photo('1486406146926-c627a92ad1ab'), 21, true,
       ],
@@ -544,7 +542,7 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
     ];
     for (const [title, department, experience, qualifications, skills] of roles) {
       const body =
-        `Jukiwa Credit Limited, the new property finance subsidiary of Jukiwa General Agencies Ltd, is building its founding team.\n\n` +
+        `Jukiwa Credit Limited, a new property finance company, is building its founding team.\n\n` +
         `Experience\n${experience}\n\nQualifications\n${qualifications}\n\nSkills\n${skills}\n\n` +
         `How to apply\nSend your CV, a cover letter and copies of your certificates to careers@jukiwa.co.ke, with "${title}" in the subject line. ` +
         `Only shortlisted candidates will be contacted. Jukiwa Credit Limited is an equal opportunity employer and welcomes applications from qualified people across Kenya.`;

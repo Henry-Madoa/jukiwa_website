@@ -21,7 +21,7 @@ export default async function DiasporaPage() {
   return (
     <>
       <PageHero
-        eyebrow="Kenyans abroad"
+         eyebrow="Kenyans abroad"
         title={<>Your property at home, <span className="hl">working for you abroad</span>.</>}
         lead="From the UK, the USA or Canada: we manage your Kenyan property, advance you 5–10 times its rent, finish the building you started, or buy the plot you have been saving for — and deposit the balance wherever you are."
         crumbs={[{ href: '/diaspora', label: 'Diaspora' }]}

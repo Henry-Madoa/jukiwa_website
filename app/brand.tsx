@@ -1,7 +1,7 @@
 import { cdn } from '@/lib/cloudinary.ts';
 
 /*
- * Jukiwa Credit's mark: the roof from the Jukiwa General Agencies logo, over three rising bars.
+ * Jukiwa Credit's mark: a roof over three rising bars.
  * Property, and money growing under it — the whole business in one glyph.
  *
  * Drawn inline rather than served as a file so it takes the brand colours from the runtime theme:

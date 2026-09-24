@@ -7,7 +7,7 @@ import { Icon } from '../icons.tsx';
 
 export const metadata: Metadata = {
   title: 'Careers',
-  description: 'Join the founding team of Jukiwa Credit Limited, the property finance company of the Jukiwa group.',
+  description: 'Join the founding team of Jukiwa Credit Limited, a Kenyan property finance company.',
   alternates: { canonical: '/careers' },
 };
 
@@ -51,7 +51,7 @@ export default async function CareersPage() {
           <div className="card" style={{ marginTop: 36, background: 'var(--cream)' }}>
             <h3>Internships and attachments</h3>
             <p className="muted">
-              The Jukiwa group takes students in business management, sales, IT and law. Send your CV and a copy of your student ID
+              We take students in business management, sales, IT and law. Send your CV and a copy of your student ID
               or recent transcript to <a href="mailto:careers@jukiwa.co.ke" style={{ color: 'var(--brand)', fontWeight: 700 }}>careers@jukiwa.co.ke</a>.
             </p>
           </div>

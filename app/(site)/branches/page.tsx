@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getBranches, getSettings } from '@/lib/site.ts';
+import { getBranches } from '@/lib/site.ts';
 import { telHref } from '@/lib/format.ts';
 import { BRANCH_KINDS } from '@/lib/types.ts';
 import { EnquiryForm } from '../forms.tsx';
@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 };
 
 export default async function BranchesPage() {
-  const [company, branches] = await Promise.all([getSettings(), getBranches()]);
+  const branches = await getBranches();
 
   return (
     <>
       <PageHero
         eyebrow="Branches & offices"
-        title={<>Walk in. We share <span className="hl">every Jukiwa office</span>.</>}
-        lead={`Jukiwa Credit works from the same offices as ${company.parent_name ?? 'Jukiwa General Agencies'} — headquarters in Kilimani, branches and satellites across Kenya, and a diaspora office in London.`}
+        title={<>Walk in. We are <span className="hl">closer than you think</span>.</>}
+        lead="Our headquarters in Kilimani, branches and satellites across Kenya, and a diaspora office in London."
         crumbs={[{ href: '/branches', label: 'Branches' }]}
       />
 
@@ -60,7 +60,7 @@ export default async function BranchesPage() {
             <span className="eyebrow">Bring Jukiwa to your county</span>
             <h2 className="display-2" style={{ color: '#fff' }}>No office near you yet? <span className="hl">Open one with us.</span></h2>
             <p className="lead">
-              The Jukiwa group is growing across all 47 counties and the diaspora. If you have the integrity and the network to serve
+              Jukiwa Credit is growing across all 47 counties and the diaspora. If you have the integrity and the network to serve
               landlords where you live, we will equip you with the brand, the systems and the finance to back them.
             </p>
             <ul className="ticks">

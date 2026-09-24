@@ -26,7 +26,9 @@ export function PageHero({ eyebrow, title, lead, crumbs, children }: {
             {crumbs.map((c) => <span key={c.href}><span aria-hidden="true">/ </span><Link href={c.href}>{c.label}</Link></span>)}
           </nav>
         ) : null}
-        {eyebrow ? <div style={{ marginTop: crumbs ? 22 : 0 }}><span className="eyebrow">{eyebrow}</span></div> : null}
+        {eyebrow ? 
+         <div style={{ marginTop: crumbs ? 22 : 0 }}>
+          <span className="eyebrow">{eyebrow}</span></div> : null}
         <h1 className="display-2">{title}</h1>
         {lead ? <p className="lead">{lead}</p> : null}
         {children}

@@ -153,3 +153,25 @@ export function SiteHeader({
     </>
   );
 }
+
+/**
+ * The way in for staff. The public pages are cached and never read the session cookie, so this
+ * asks /admin/session after the page loads: a signed-in member of staff sees "Admin dashboard",
+ * everybody else "Staff portal". Either way it is only a link — the admin guards itself.
+ */
+export function StaffLink() {
+  const [signedIn, setSignedIn] = useState(false);
+  useEffect(() => {
+    let live = true;
+    fetch('/admin/session', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { signedIn?: boolean } | null) => { if (live) setSignedIn(!!data?.signedIn); })
+      .catch(() => {});
+    return () => { live = false; };
+  }, []);
+  return (
+    <Link href={signedIn ? '/admin' : '/admin/login'} className="staff-link" prefetch={false}>
+      <Icon name="lock" size={13} /> {signedIn ? 'Admin dashboard' : 'Staff portal'}
+    </Link>
+  );
+}

@@ -26,6 +26,10 @@ export function cdn(url: string | null | undefined, opts: { width?: number; heig
   const parts = ['f_auto', 'q_auto'];
   if (opts.width) parts.push(`w_${Math.round(opts.width)}`);
   if (opts.height) parts.push(`h_${Math.round(opts.height)}`);
-  if (opts.width || opts.height) parts.push(`c_${opts.crop ?? 'fill'}`, 'g_auto');
+  if (opts.width || opts.height) {
+    const crop = opts.crop ?? 'fill';
+    // Gravity only means something when the picture is cropped; Cloudinary rejects g_auto with c_fit.
+    parts.push(`c_${crop}`, ...(crop === 'fill' ? ['g_auto'] : []));
+  }
   return `https://res.cloudinary.com/${cloud}/image/upload/${parts.join(',')}/${path}`;
 }

@@ -19,7 +19,7 @@ export default async function PrivacyPage() {
 
   const sections: [title: string, body: string[]][] = [
     ['Who we are', [
-      `${company.name} (“Jukiwa Credit”, “we”) is the data controller for the information you give us through this website. We are a subsidiary of ${company.parent_name ?? 'Jukiwa General Agencies Ltd'} and share its offices.`,
+      `${company.name} (“Jukiwa Credit”, “we”) is the data controller for the information you give us through this website.`,
       `Contact us about your information at ${email}${company.postal_address ? `, or write to ${company.postal_address}, ${company.city ?? 'Nairobi'}` : ''}.`,
     ]],
     ['What we collect on this website', [
@@ -35,7 +35,7 @@ export default async function PrivacyPage() {
     ]],
     ['Who sees it', [
       'Authorised Jukiwa Credit staff, whose access is limited by role: a marketing officer, for example, cannot see loan applications. Every change made to your record is logged with the name of the person who made it.',
-      `Where you also use ${company.parent_name ?? 'Jukiwa General Agencies'} for property management, the two companies share what is needed to provide both services — for example, the rent schedule a rent advance is based on.`,
+      'Where Jukiwa also manages your property, we use what is needed to provide both services — for example, the rent schedule a rent advance is based on.',
       'We do not sell your information, and we do not share it with advertisers. Credit reference bureaus are consulted only once you apply formally at a branch, and we will tell you when we do.',
     ]],
     ['How long we keep it', [

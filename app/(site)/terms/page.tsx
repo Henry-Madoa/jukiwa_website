@@ -17,7 +17,7 @@ export default async function TermsPage() {
     ['Applying online', 'Submitting an application through this website does not commit you to borrowing, and does not commit us to lending. It asks a credit officer to contact you. A loan exists only once you have accepted and signed a written offer.'],
     ['Accuracy', 'We take care to keep the information on this website accurate and current, but products and terms change. If anything here differs from your offer letter or agreement, the offer letter and agreement prevail.'],
     ['Your use of the website', 'Please do not submit information about another person without their permission, attempt to interfere with the website, or submit false information. We may refuse or remove any submission that appears automated or abusive.'],
-    ['Links', `This website links to ${company.parent_name ?? 'our parent company'} and to social media. We are not responsible for the content of websites we do not operate.`],
+    ['Links', 'This website links to social media and other websites. We are not responsible for the content of websites we do not operate.'],
     ['Complaints', `If you are unhappy with any part of our service, contact us at ${company.email ?? 'info@jukiwa.co.ke'} or visit our head office. We will acknowledge your complaint promptly and aim to resolve it fairly.`],
     ['Law', 'These terms are governed by the laws of Kenya.'],
   ];

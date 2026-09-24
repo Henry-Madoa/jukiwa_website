@@ -9,10 +9,7 @@ import { RowFilter } from '../ui.tsx';
 
 export const metadata = { title: 'Leadership & team' };
 
-/**
- * The people on the About page. Jukiwa Credit shares its directors and its staff with Jukiwa
- * General Agencies, so these are the same faces a landlord already knows — which is the point.
- */
+/** The people on the About page — a face and a name are what make a lender trustworthy. */
 export default async function TeamPage() {
   const user = await requirePage('TEAM');
   const team = await adminTeam();

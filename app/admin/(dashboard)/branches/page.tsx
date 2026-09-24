@@ -8,8 +8,7 @@ import { ActionForm, ConfirmSubmit, Submit } from '../ui.tsx';
 export const metadata = { title: 'Branches & offices' };
 
 /**
- * Where a customer can walk in. Jukiwa Credit shares every office with Jukiwa General Agencies, so
- * a new satellite for the agency is a new branch here too — add it the day it opens.
+ * Where a customer can walk in — add a new branch or satellite the day it opens.
  *
  * Offices are a handful of fields each, so they are edited in place, one card per office.
  */
@@ -104,7 +103,7 @@ export default async function BranchesPage() {
         <header>
           <div>
             <h2>Branches & offices</h2>
-            <p>{branches.filter((b) => b.is_published).length} shown on the website. Every office here is shared with Jukiwa General Agencies.</p>
+            <p>{branches.filter((b) => b.is_published).length} shown on the website.</p>
           </div>
         </header>
       </div>
@@ -139,7 +138,7 @@ export default async function BranchesPage() {
         <ActionForm action={saveBranch} success="Office added.">
           <div className="panel">
             <header>
-              <div><h2>Add an office</h2><p>A new branch or satellite opened by the group.</p></div>
+              <div><h2>Add an office</h2><p>A new branch or satellite we have opened.</p></div>
               <span style={{ flex: 1 }} />
               <Submit>Add office</Submit>
             </header>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { getBranches, getProducts, getSettings } from '@/lib/site.ts';
 import { telHref, whatsappHref } from '@/lib/format.ts';
 import { Wordmark } from '@/app/brand.tsx';
-import { SiteHeader, type MenuGroup } from './site-nav.tsx';
+import { SiteHeader, StaffLink, type MenuGroup } from './site-nav.tsx';
 import { NewsletterForm } from './forms.tsx';
 import { Icon } from './icons.tsx';
 import { JsonLd } from './prose.tsx';
@@ -42,7 +42,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
       label: 'Company',
       href: '/about',
       items: [
-        { href: '/about', label: 'About Jukiwa Credit', hint: 'Who we are, and the group behind us', icon: '🏠' },
+        { href: '/about', label: 'About Jukiwa Credit', hint: 'Who we are and what we stand for', icon: '🏠' },
         { href: '/about#leadership', label: 'Leadership', hint: 'The people you will deal with', icon: '👥' },
         { href: '/branches', label: 'Branches & offices', hint: 'Walk in — we share every Jukiwa office', icon: '📍' },
         { href: '/careers', label: 'Careers', hint: 'Join the founding team', icon: '💼' },
@@ -93,7 +93,6 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
           url: siteUrl(),
           telephone: phone,
           email: company.email,
-          parentOrganization: company.parent_name ? { '@type': 'Organization', name: company.parent_name, url: company.parent_url } : undefined,
           address: {
             '@type': 'PostalAddress',
             streetAddress: company.physical_address?.replace(/\n/g, ', '),
@@ -112,12 +111,8 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
           {company.email ? <a href={`mailto:${company.email}`} className="hide-sm"><Icon name="mail" size={14} /> {company.email}</a> : null}
           {company.diaspora_phone ? <a href={telHref(company.diaspora_phone)} className="hide-sm"><Icon name="globe" size={14} /> Diaspora {company.diaspora_phone}</a> : null}
           <span className="spacer" />
-          {company.parent_name && external(company.parent_url) ? (
-            <a href={company.parent_url} target="_blank" rel="noreferrer" className="parent">
-              <svg className="roof" viewBox="0 0 14 10" aria-hidden="true"><path d="M1 8.5 7 2l6 6.5" fill="none" stroke="var(--roof)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              <span className="hide-sm">Part of {company.parent_name}</span><span className="show-sm">Jukiwa group</span> ↗
-            </a>
-          ) : null}
+          {company.office_hours ? <span className="hours hide-sm"><Icon name="clock" size={14} /> {company.office_hours}</span> : null}
+          <StaffLink />
         </div>
       </div>
 
@@ -136,7 +131,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
           <div className="footer-grid">
             <div>
               <Link href="/" className="brand" style={{ textDecoration: 'none' }}>
-                <Wordmark name={short} sub={company.parent_name ? `A ${company.parent_name} company` : null} logoUrl={company.logo_url} size={44} />
+                <Wordmark name={short} logoUrl={company.logo_url} size={44} />
               </Link>
               <p className="footer-about">{company.about_intro}</p>
               <div className="socials">
@@ -201,13 +196,13 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
               © {year} {company.name}.{company.registration_no ? ` Registration No. ${company.registration_no}.` : ''}{' '}
               {company.licence_no ? `${company.licence_no}. ` : ''}
               {company.licence_note ? `${company.licence_note} ` : ''}
-              {company.parent_name ? `A subsidiary of ${company.parent_name}, sharing its directors and offices${hq ? ` — head office in ${hq.town ?? hq.name}` : ''}. ` : ''}
+              {hq ? `Head office in ${hq.town ?? hq.name}, ${hq.county ?? 'Nairobi'}. ` : ''}
               All rates shown are indicative; your rate is confirmed in writing before you sign.
             </p>
             <nav aria-label="Legal">
               <Link href="/privacy">Privacy</Link>
               <Link href="/terms">Terms</Link>
-              <Link href="/admin/login">Staff sign-in</Link>
+              <Link href="/admin/login">Staff portal</Link>
             </nav>
           </div>
         </div>
