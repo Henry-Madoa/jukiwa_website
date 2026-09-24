@@ -198,6 +198,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
               {company.licence_note ? `${company.licence_note} ` : ''}
               {hq ? `Head office in ${hq.town ?? hq.name}, ${hq.county ?? 'Nairobi'}. ` : ''}
               All rates shown are indicative; your rate is confirmed in writing before you sign.
+              <span className="powered">Powered by <strong>Calbytes Technologies Limited</strong></span>
             </p>
             <nav aria-label="Legal">
               <Link href="/privacy">Privacy</Link>

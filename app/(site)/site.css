@@ -948,11 +948,14 @@
 .paybill small { font-size: 0.78rem; }
 .newsletter { margin-top: 48px; padding: 28px; border-radius: var(--r-xl); background: rgb(255 255 255 / 0.05); border: 1px solid rgb(255 255 255 / 0.1); display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
 .newsletter h4 { margin: 0 0 4px; text-transform: none; letter-spacing: -0.01em; font-family: var(--font-display-stack); font-size: 1.25rem; }
-.newsletter form { display: flex; gap: 8px; flex: 1 1 360px; max-width: 480px; }
-.newsletter input { flex: 1; min-height: 50px; padding: 12px 18px; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.2); background: rgb(255 255 255 / 0.08); color: #fff; font: inherit; }
+.newsletter form { display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 320px; min-width: 0; max-width: 480px; }
+.newsletter form .btn { flex: 0 0 auto; }
+.newsletter input { flex: 1 1 180px; min-width: 0; min-height: 50px; padding: 12px 18px; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.2); background: rgb(255 255 255 / 0.08); color: #fff; font: inherit; }
 .newsletter input::placeholder { color: rgb(255 255 255 / 0.5); }
 .newsletter input:focus { outline: none; border-color: var(--accent); }
 .footer-bottom { padding-right: 190px; margin-top: 48px; padding-block: 24px; border-top: 1px solid rgb(255 255 255 / 0.1); display: flex; justify-content: space-between; gap: 16px 32px; flex-wrap: wrap; font-size: 0.82rem; }
+.footer .powered { display: block; margin-top: 6px; color: rgb(255 255 255 / 0.55); }
+.footer .powered strong { color: rgb(255 255 255 / 0.82); font-weight: 700; }
 .footer-bottom .legal { max-width: 760px; line-height: 1.6; }
 .footer-bottom nav { display: flex; gap: 18px; flex-wrap: wrap; }
 
@@ -1026,7 +1029,7 @@
 
 @media (max-width: 640px) {
   :root { --gutter: 16px; }
-  .footer-bottom { padding-right: 0; padding-bottom: 72px; }
+  .footer-bottom { padding-right: 0; padding-bottom: 84px; }
   .topbar .hide-sm { display: none; }
   .topbar .show-sm { display: inline; }
   .topbar .wrap { gap: 14px; }
@@ -1034,6 +1037,9 @@
   .steps { grid-template-columns: minmax(0, 1fr); }
   .calc-breakdown { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer-grid { grid-template-columns: minmax(0, 1fr); }
+  .newsletter { padding: 22px 20px; }
+  .newsletter form { flex-basis: 100%; }
+  .newsletter form .btn { flex: 1 1 100%; }
   .wa-float span { display: none; }
   .wa-float { padding: 15px; }
   .progress button small { display: none; }
