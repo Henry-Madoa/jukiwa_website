@@ -117,7 +117,11 @@ export async function Insights({ range }: { range: Range }) {
                         {bucket.applications ? <span className="viz-col-value">{bucket.applications}</span> : null}
                       </div>
                     </div>
-                    <div className="viz-col-label">{bucket.label}</div>
+                    <div className="viz-col-label">
+                      <span className="full">{bucket.label}</span>
+                      {/* On a phone there is only room for the date of the month (or the month), and only every other one. */}
+                      <span className="short">{RANGES.find((r) => r.value === range)!.bucket === 'week' ? new Date(bucket.start).getUTCDate() : bucket.label}</span>
+                    </div>
                   </div>
                 ))}
               </div>

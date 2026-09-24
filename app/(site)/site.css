@@ -139,6 +139,7 @@
 .topbar a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
 .topbar .show-sm { display: none; }
 .topbar .staff-link {
+  flex: 0 0 auto;
   padding: 3px 11px;
   border-radius: 999px;
   border: 1px solid rgb(255 255 255 / 0.22);
@@ -387,7 +388,8 @@
   position: relative;
 }
 .calc-plain { box-shadow: var(--shadow-lg); border: 1px solid var(--line); }
-.calc-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.calc-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 18px; }
+.calc-head .badge-live { white-space: nowrap; }
 .calc-head h3 { font-size: 1.15rem; }
 .calc-head .badge-live { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; color: var(--ok); background: var(--ok-soft); padding: 4px 10px; border-radius: 999px; }
 .calc-head .badge-live::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 1.8s infinite; }
@@ -417,7 +419,7 @@
 .calc-select { width: 100%; min-height: 48px; padding: 10px 14px; border: 1.5px solid var(--line-strong); border-radius: 14px; font: inherit; font-weight: 650; background: var(--surface-soft); color: var(--ink); margin-bottom: 18px; }
 
 .calc-field { margin-bottom: 20px; }
-.calc-field-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.calc-field-top { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 10px; }
 .calc-field-top label { font-size: 0.85rem; font-weight: 650; color: var(--ink-soft); }
 .calc-value { display: inline-flex; align-items: baseline; gap: 6px; font-family: var(--font-display-stack); font-weight: 800; font-size: 1.35rem; letter-spacing: -0.02em; color: var(--ink); }
 .calc-value input {
@@ -870,6 +872,10 @@
 
 /* ======================================================================= product page */
 
+.product-hero-grid.calc-page-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); }
+.stats.contact-ways { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.stats.contact-ways .stat::before { display: none; }
+.contact-ways .stat b { overflow-wrap: anywhere; }
 .product-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: clamp(28px, 5vw, 64px); align-items: start; }
 .facts-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 30px; }
 .fact { padding: 16px; border-radius: 16px; background: rgb(255 255 255 / 0.07); border: 1px solid rgb(255 255 255 / 0.12); }
@@ -1011,7 +1017,7 @@
 }
 
 @media (max-width: 960px) {
-  .hero-grid, .split, .product-hero-grid, .cta-band { grid-template-columns: minmax(0, 1fr); }
+  .hero-grid, .split, .product-hero-grid, .product-hero-grid.calc-page-grid, .cta-band { grid-template-columns: minmax(0, 1fr); }
   .split-reverse > :first-child { order: 0; }
   .side-sticky { position: static; }
   .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1052,3 +1058,18 @@
 .mini-flags { display: inline-flex !important; align-items: center; gap: 4px; }
 .mini-flags svg { width: 16px; height: 11px; border-radius: 2px; box-shadow: 0 0 0 1px var(--line); }
 .choice .ci svg { width: 26px; height: 18px; border-radius: 3px; box-shadow: 0 0 0 1px var(--line); display: block; }
+
+/* The top bar keeps the phone number and the staff link; the rest steps aside as the screen narrows. */
+@media (max-width: 1240px) { .topbar .hours { display: none; } }
+@media (max-width: 900px) { .topbar .hide-md { display: none; } }
+
+/* The narrowest phones (360px and below): the logo, Apply and the menu button must all fit. */
+@media (max-width: 400px) {
+  .header .wrap { gap: 10px; }
+  .header-cta { gap: 6px; }
+  .header-cta .btn { padding-inline: 12px; }
+  .header .wordmark { gap: 8px; }
+  .header .wordmark svg, .header .wordmark img { width: 34px; height: 34px; }
+  .header .wordmark-text strong { font-size: 1.05rem; }
+  .burger { width: 40px; height: 40px; }
+}

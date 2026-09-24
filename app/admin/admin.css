@@ -414,6 +414,12 @@ a.tile-stat:hover { border-color: var(--brand); transform: translateY(-2px); box
 .viz-col-bar { position: relative; width: min(24px, 60%); border-radius: 4px 4px 0 0; }
 .viz-col-value { position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%); font-size: 0.78rem; font-weight: 700; color: var(--ink); white-space: nowrap; }
 .viz-col-label { height: 26px; line-height: 26px; font-size: 11px; color: var(--muted); }
+.viz-col-label .short { display: none; }
+@media (max-width: 680px) {
+  .viz-col-label .full { display: none; }
+  .viz-col-label .short { display: inline; }
+  .viz-col:nth-child(even):not(:last-child) .viz-col-label .short { visibility: hidden; }
+}
 
 .viz-meter + .viz-meter { margin-top: 14px; }
 .viz-meter-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; font-size: 0.82rem; }
@@ -605,7 +611,7 @@ a.tile-stat:hover { border-color: var(--brand); transform: translateY(-2px); box
   color: var(--muted);
 }
 .image-field .preview img { width: 100%; height: 100%; object-fit: cover; }
-.image-field input[type='file'] { font-size: 0.8rem; }
+.image-field input[type='file'] { font-size: 0.8rem; width: 100%; max-width: 100%; }
 
 /* ======================================================================== status */
 
@@ -889,6 +895,7 @@ a.tile-stat:hover { border-color: var(--brand); transform: translateY(-2px); box
 
 @media (max-width: 680px) {
   .grid-2, .grid-3 { grid-template-columns: minmax(0, 1fr); }
+  .image-field { flex-wrap: wrap; }
   .admin table.list th,
   .admin table.list td { padding: 10px 12px; }
   .panel .body { padding: 16px; }

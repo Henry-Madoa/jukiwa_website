@@ -32,7 +32,7 @@ export default async function ContactPage() {
 
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
-          <div className="stats" style={{ marginTop: -44, position: 'relative', gridTemplateColumns: `repeat(${Math.max(1, ways.length)}, minmax(0, 1fr))` }}>
+          <div className="stats contact-ways" style={{ marginTop: -44, position: 'relative' }}>
             {ways.map((w) => (
               <a key={w.label} href={w.href} className="stat" style={{ textDecoration: 'none', color: 'inherit' }} target={w.icon === 'whatsapp' ? '_blank' : undefined} rel="noreferrer">
                 <span style={{ color: 'var(--brand)', display: 'inline-flex', marginBottom: 10 }}><Icon name={w.icon} size={26} /></span>

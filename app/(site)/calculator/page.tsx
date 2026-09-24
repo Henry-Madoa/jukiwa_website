@@ -21,7 +21,7 @@ export default async function CalculatorPage({ searchParams }: PageProps<'/calcu
         crumbs={[{ href: '/calculator', label: 'Calculator' }]}
       />
       <section className="section">
-        <div className="wrap product-hero-grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.8fr)' }}>
+        <div className="wrap product-hero-grid calc-page-grid">
           <LoanCalculator products={products} initial={typeof product === 'string' ? product : undefined} variant="full" />
           <div className="stack" style={{ '--stack': '22px' } as React.CSSProperties}>
             <span className="eyebrow">Reading the figures</span>

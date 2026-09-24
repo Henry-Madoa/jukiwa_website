@@ -70,7 +70,9 @@ export function PermissionGrid({
   const grantedTables = tables.filter((table) => RIGHTS.some((right) => ticks[`perm:TABLE:${table.name}:${right}`])).length;
 
   return (
-    <div style={{ display: 'grid', gap: 24 }}>
+    // minmax(0, 1fr): a grid column otherwise grows to its widest table, and the tables are meant to
+    // scroll inside their own box on a phone rather than push the whole panel off the screen.
+    <div style={{ display: 'grid', gap: 24, gridTemplateColumns: 'minmax(0, 1fr)' }}>
       <div className="note note-info">
         <strong>{grantedPages}</strong> of {pages.length} screens and <strong>{grantedTables}</strong> of {tables.length}{' '}
         tables are granted. A screen needs both: Execute on the page, and the rights on the tables it reads and writes.

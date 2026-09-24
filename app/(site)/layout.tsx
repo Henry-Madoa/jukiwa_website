@@ -109,7 +109,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
         <div className="wrap">
           {phone ? <a href={telHref(phone)}><Icon name="phone" size={14} /> {phone}</a> : null}
           {company.email ? <a href={`mailto:${company.email}`} className="hide-sm"><Icon name="mail" size={14} /> {company.email}</a> : null}
-          {company.diaspora_phone ? <a href={telHref(company.diaspora_phone)} className="hide-sm"><Icon name="globe" size={14} /> Diaspora {company.diaspora_phone}</a> : null}
+          {company.diaspora_phone ? <a href={telHref(company.diaspora_phone)} className="hide-sm hide-md"><Icon name="globe" size={14} /> Diaspora {company.diaspora_phone}</a> : null}
           <span className="spacer" />
           {company.office_hours ? <span className="hours hide-sm"><Icon name="clock" size={14} /> {company.office_hours}</span> : null}
           <StaffLink />
