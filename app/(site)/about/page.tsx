@@ -22,7 +22,7 @@ export default async function AboutPage() {
     <>
       <PageHero
         eyebrow="About us"
-        title={<>Property finance from the people who <span className="hl">manage property</span>.</>}
+        title={<>Funding Kenya&rsquo;s <span className="hl">property dreams</span>.</>}
         lead={company.about_intro}
         crumbs={[{ href: '/about', label: 'About' }]}
       />

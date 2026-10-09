@@ -118,7 +118,7 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
       {
         name: 'Jukiwa Credit Limited',
         short: 'Jukiwa Credit',
-        tagline: 'Property finance from the people who manage property.',
+        tagline: 'Where your dreams find funding.',
         intro: 'Jukiwa Credit offers rent advances, building finance and property loans across Kenya — from a team that has managed Kenyan property for more than two decades.',
         story:
           'For years, our team has done something most property managers do not: advance money to the landlords whose buildings we manage, and recover it quietly from the rent we collect. Landlords used those advances to finish buildings, buy the next plot and reinvest in Kenya — many of them from London, Houston or Toronto.\n\n' +

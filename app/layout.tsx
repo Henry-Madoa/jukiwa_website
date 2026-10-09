@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const short = company.short_name ?? company.name;
   return {
     metadataBase: new URL(base),
-    title: { default: `${short} — ${company.tagline ?? 'Property finance in Kenya'}`, template: `%s · ${short}` },
+    title: { default: `${short} — ${company.tagline ?? 'Where your dreams find funding'}`, template: `%s · ${short}` },
     description:
       company.hero_body ??
       `${company.name}: rent advances, building finance and property loans across Kenya and for Kenyans abroad.`,
