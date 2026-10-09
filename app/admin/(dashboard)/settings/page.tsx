@@ -172,7 +172,7 @@ export default async function SettingsPage() {
             </div>
             <div className="grid-2">
               <div>
-                <ImageField name="logo" label="Logo (optional)" current={c.logo_url} hint="Replaces the drawn mark everywhere. A square PNG with a transparent background works best." />
+                <ImageField name="logo" label="Logo (optional)" current={c.logo_url} hint="Replaces the Jukiwa Credit logo everywhere. Leave empty to keep it. A PNG with a transparent background works best." />
                 {c.logo_url ? (
                   <div className="check-row"><input id="remove_logo" name="remove_logo" type="checkbox" value="1" /><label htmlFor="remove_logo">Remove the uploaded logo and use the drawn mark</label></div>
                 ) : null}

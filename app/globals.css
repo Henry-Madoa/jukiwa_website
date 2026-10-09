@@ -152,7 +152,7 @@ video {
 
 /* The wordmark, shared by the site header, the footer, the admin and the sign-in page. */
 .wordmark { display: inline-flex; align-items: center; gap: 10px; }
-.wordmark svg, .wordmark img { flex: 0 0 auto; display: block; }
+.wordmark .brand-mark { flex: 0 0 auto; display: block; }
 .wordmark-text { display: grid; line-height: 1.1; }
 .wordmark-text strong {
   font-family: var(--font-display-stack);
@@ -170,11 +170,20 @@ video {
   margin-top: 4px;
 }
 
-/* On the dark surfaces the letters go white, and the halo behind the arrow takes the surface colour. */
+/*
+ * On the dark surfaces the name goes white, and the logo sits on a white tile: its green letters
+ * would disappear straight onto dark green.
+ */
 .footer, .admin-side, .login-aside {
   --mark-ink: #fff;
-  --mark-gap: var(--brand-deep);
   --mark-slogan: var(--gold);
+}
+:is(.footer, .admin-side, .login-aside) .wordmark .brand-mark {
+  box-sizing: content-box;
+  padding: 5px 7px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.22);
 }
 
 /* Scrollbars, where the browser lets us have an opinion. */

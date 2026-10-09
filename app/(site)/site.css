@@ -1095,7 +1095,7 @@
   .header-cta { gap: 6px; }
   .header-cta .btn { padding-inline: 12px; }
   .header .wordmark { gap: 8px; }
-  .header .wordmark svg, .header .wordmark img { width: auto; height: 34px; }
+  .header .wordmark .brand-mark { width: auto; height: 34px; }
   .header .wordmark-text strong { font-size: 1.05rem; }
   .burger { width: 40px; height: 40px; }
 }
@@ -1118,7 +1118,6 @@
   z-index: 0;
 }
 .brand-plate {
-  --mark-gap: #fff;
   position: relative;
   z-index: 1;
   width: min(100%, 470px);
@@ -1137,26 +1136,8 @@
   border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
   pointer-events: none;
 }
-.brand-plate .brand-mark, .brand-plate img { display: block; width: min(100%, 300px); height: auto; margin-inline: auto; }
-.plate-name {
-  margin-top: 18px !important;
-  font-family: var(--font-display-stack);
-  font-weight: 800;
-  font-size: clamp(1.35rem, 2.6vw, 2rem);
-  letter-spacing: 0.08em;
-  line-height: 1.1;
-  text-transform: uppercase;
-  color: #3b3f3c;
-}
-.plate-rule { display: block; width: 72px; height: 3px; margin: 14px auto 12px; border-radius: 3px; background: var(--gold-gradient); }
-.plate-slogan {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-weight: 700;
-  font-size: clamp(0.72rem, 1.2vw, 0.9rem);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold-dark);
-}
+/* The whole logo, lettering and slogan included, exactly as it is printed. */
+.brand-plate .brand-mark { display: block; width: min(100%, 390px); height: auto; margin-inline: auto; }
 .brand-stage .float-chip.c1 { top: 4px; left: -12px; }
 .brand-stage .float-chip.c2 { bottom: 4px; right: -12px; top: auto; }
 
@@ -1215,13 +1196,13 @@
 @media (max-width: 960px) {
   .brand-stage { padding-block: 8px 20px; }
   .brand-plate { width: min(100%, 400px); }
-  .brand-plate .brand-mark, .brand-plate img { width: min(100%, 230px); }
+  .brand-plate .brand-mark { width: min(100%, 330px); }
   .brand-stage .float-chip { display: none; }
   .hero-copy { text-align: left; }
   .dream-grid, .values-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-  .brand-plate .brand-mark, .brand-plate img { width: min(100%, 190px); }
+  .brand-plate .brand-mark { width: min(100%, 290px); }
   .dream-grid, .values-grid { grid-template-columns: minmax(0, 1fr); }
   .hero .btn-row .btn { flex: 1 1 100%; }
 }
@@ -1255,22 +1236,20 @@
   .hero-grid-brand .btn-lg { min-height: clamp(46px, 6.4vh, 56px); }
   .brand-stage { padding-block: 18px; }
   .brand-plate { padding: clamp(18px, 3.4vh, 40px) clamp(20px, 3vw, 40px) clamp(18px, 3vh, 34px); width: min(100%, 440px); }
-  .brand-plate .brand-mark, .brand-plate img { width: min(100%, 290px, 30vh); }
-  .plate-name { margin-top: clamp(8px, 1.6vh, 18px) !important; font-size: clamp(1.2rem, min(2.2vw, 3.6vh), 1.9rem); }
-  .plate-rule { margin: clamp(8px, 1.4vh, 14px) auto clamp(6px, 1.2vh, 12px); }
+  .brand-plate .brand-mark { width: min(100%, 400px, 56vh); }
 }
 
-/* The header phone number is in the top bar already; below 1360px it gives its room to Apply. */
-@media (max-width: 1360px) {
+/* The header phone number is in the top bar already; below 1480px it gives its room to Apply. */
+@media (max-width: 1480px) {
   .header-phone { display: none; }
 }
 
-/* On a short desktop screen the floating chips would sit on the logo plate's slogan; they step aside. */
+/* On a short desktop screen the floating chips would sit on the logo's lettering; they step aside. */
 @media (min-width: 961px) and (max-height: 799px) {
   .brand-stage .float-chip { display: none; }
 }
 
-/* Where the chips do show, the lower one hangs below the plate rather than over its slogan. */
+/* Where the chips do show, the lower one hangs below the plate rather than over the lettering. */
 @media (min-width: 961px) and (min-height: 800px) {
   .brand-stage { padding-bottom: 50px; }
   .brand-stage .float-chip.c2 { bottom: 0; right: -18px; }

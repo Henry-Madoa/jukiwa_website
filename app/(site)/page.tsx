@@ -80,13 +80,10 @@ export default async function HomePage() {
           <span className="orb orb-1" /><span className="orb orb-2" /><span className="grid" />
         </div>
         <div className="wrap hero-grid hero-grid-brand">
-          {/* The company itself, large: the logo as it is printed, on its own white plate. */}
+          {/* The company itself, large: the whole logo exactly as it is printed, on its own white plate. */}
           <div className="brand-stage">
             <div className="brand-plate">
-              <BrandMark size={240} logoUrl={company.logo_url} title={company.name} />
-              <p className="plate-name">{company.name.replace(/\s+Limited$/i, ' Ltd')}</p>
-              <span className="plate-rule" aria-hidden="true" />
-              <p className="plate-slogan">{BRAND_SLOGAN}</p>
+              <BrandMark full size={273} logoUrl={company.logo_url} title={company.name} />
             </div>
             <div className="float-chip c1">
               <span className="chip-ico" aria-hidden="true"><Icon name="home" size={20} /></span>
