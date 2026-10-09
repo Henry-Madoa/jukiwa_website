@@ -811,7 +811,19 @@
 .choice > span b { display: block; font-size: 0.97rem; }
 .choice > span small { display: block; color: var(--muted); font-size: 0.8rem; margin-top: 2px; font-weight: 500; }
 .choice .ci { font-size: 1.5rem; line-height: 1; flex: 0 0 auto; }
-.choice input:checked + span { border-color: var(--brand); background: color-mix(in srgb, var(--brand) 6%, #fff); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent); }
+.choice input:checked + span { border-color: var(--brand); background: color-mix(in srgb, var(--brand) 9%, #fff); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent); padding-right: 40px; }
+.choice input:checked + span b { color: var(--brand); }
+/* A tick on the chosen card, so the choice reads at a glance and not only by its border. */
+.choice input:checked + span::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--brand) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 12px no-repeat;
+}
 .choice input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
 .choices.compact { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 .choices.compact > .choice > span { padding: 12px 14px; align-items: center; }
@@ -940,7 +952,7 @@
 .footer a:hover { color: var(--accent); }
 .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.3fr; gap: 40px; }
 .footer .brand { color: #fff; }
-.footer h4 { color: #fff; font-family: var(--font-sans-stack); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 16px; font-weight: 800; }
+.footer h2 { color: #fff; font-family: var(--font-sans-stack); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 16px; font-weight: 800; }
 .footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 11px; font-size: 0.93rem; }
 .footer-about { font-size: 0.93rem; line-height: 1.7; margin-top: 18px; max-width: 40ch; }
 .socials { display: flex; gap: 8px; margin-top: 22px; }
@@ -953,7 +965,7 @@
 .paybill b { font-family: var(--font-display-stack); font-size: 1.5rem; color: #fff; letter-spacing: 0.04em; }
 .paybill small { font-size: 0.78rem; }
 .newsletter { margin-top: 48px; padding: 28px; border-radius: var(--r-xl); background: rgb(255 255 255 / 0.05); border: 1px solid rgb(255 255 255 / 0.1); display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-.newsletter h4 { margin: 0 0 4px; text-transform: none; letter-spacing: -0.01em; font-family: var(--font-display-stack); font-size: 1.25rem; }
+.newsletter h2 { margin: 0 0 4px; text-transform: none; letter-spacing: -0.01em; font-family: var(--font-display-stack); font-size: 1.25rem; }
 .newsletter form { display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 320px; min-width: 0; max-width: 480px; }
 .newsletter form .btn { flex: 0 0 auto; }
 .newsletter input { flex: 1 1 180px; min-width: 0; min-height: 50px; padding: 12px 18px; border-radius: 999px; border: 1px solid rgb(255 255 255 / 0.2); background: rgb(255 255 255 / 0.08); color: #fff; font: inherit; }
@@ -975,7 +987,8 @@
   gap: 10px;
   padding: 14px 18px 14px 14px;
   border-radius: 999px;
-  background: #25d366;
+  /* WhatsApp green, deepened enough for white text to read (5:1). */
+  background: #11803e;
   color: #fff;
   font-weight: 800;
   font-size: 0.92rem;

@@ -142,7 +142,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
             </div>
 
             <div>
-              <h4>Loans</h4>
+              <h2>Loans</h2>
               <ul>
                 {products.map((p) => <li key={p.id}><Link href={`/loans/${p.slug}`}>{p.name}</Link></li>)}
                 <li><Link href="/calculator">Loan calculator</Link></li>
@@ -150,7 +150,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
             </div>
 
             <div>
-              <h4>Company</h4>
+              <h2>Company</h2>
               <ul>
                 <li><Link href="/about">About us</Link></li>
                 <li><Link href="/branches">Branches & offices</Link></li>
@@ -163,7 +163,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
             </div>
 
             <div>
-              <h4>Talk to us</h4>
+              <h2>Talk to us</h2>
               <ul className="contact-lines">
                 {company.physical_address ? (
                   <li><Icon name="pin" size={16} /><span>{company.physical_address.split('\n').join(', ')}{company.city ? `, ${company.city}` : ''}</span></li>
@@ -185,7 +185,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
 
           <div className="newsletter">
             <div>
-              <h4>Property money, explained monthly</h4>
+              <h2>Property money, explained monthly</h2>
               <p style={{ fontSize: '0.9rem' }}>Guides, market insight and new products. One email a month, never shared.</p>
             </div>
             <NewsletterForm sourcePage="footer" />

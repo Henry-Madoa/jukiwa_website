@@ -4,8 +4,20 @@
     {
       "name": "jukiwa-credit-dev",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev"],
+      "runtimeArgs": [
+        "dev"
+      ],
       "port": 3000
+    },
+    {
+      "name": "jukiwa-cbs-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--dir",
+        "../jukiwa_cbs",
+        "dev"
+      ],
+      "port": 3001
     }
   ]
 }

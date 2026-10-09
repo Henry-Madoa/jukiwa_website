@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { cdn } from '@/lib/cloudinary.ts';
 
 /*
@@ -44,6 +45,13 @@ export function BrandMark({
   /** The coin stack widens the mark; leave it off where only a square fits. */
   coins?: boolean;
 }) {
+  /*
+   * Gradient ids must be unique per mark: a page often draws several (header, footer, drawer), and
+   * when the first one sits in a hidden panel the browser cannot paint a gradient defined there.
+   */
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
+  const gold = `jc-gold-${uid}`;
+  const ink = `jc-ink-${uid}`;
   if (logoUrl) {
     return <img src={cdn(logoUrl, { width: size * 2, height: size * 2, crop: 'fit' })} alt={title ?? ''} width={size} height={size} style={{ objectFit: 'contain' }} />;
   }
@@ -59,12 +67,12 @@ export function BrandMark({
       aria-label={title}
     >
       <defs>
-        <linearGradient id="jc-gold" x1="4" y1="44" x2="46" y2="8" gradientUnits="userSpaceOnUse">
+        <linearGradient id={gold} x1="4" y1="44" x2="46" y2="8" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor={MARK.gold.dark} />
           <stop offset="0.55" stopColor={MARK.gold.mid} />
           <stop offset="1" stopColor={MARK.gold.light} />
         </linearGradient>
-        <linearGradient id="jc-ink" x1="0" y1="8" x2="0" y2="40" gradientUnits="userSpaceOnUse">
+        <linearGradient id={ink} x1="0" y1="8" x2="0" y2="40" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#fff" stopOpacity="0.16" />
           <stop offset="1" stopColor="#000" stopOpacity="0.14" />
         </linearGradient>
@@ -74,8 +82,8 @@ export function BrandMark({
         <path d={MARK.j} stroke="var(--mark-ink, var(--brand))" />
         <path d={MARK.c} stroke="var(--mark-ink, var(--brand))" />
         {/* A faint top-lit sheen, the way the printed letters catch the light. */}
-        <path d={MARK.j} stroke="url(#jc-ink)" />
-        <path d={MARK.c} stroke="url(#jc-ink)" />
+        <path d={MARK.j} stroke={`url(#${ink})`} />
+        <path d={MARK.c} stroke={`url(#${ink})`} />
       </g>
 
       {/* The halo first, so the arrow reads cleanly where it crosses the letters. */}
@@ -83,8 +91,8 @@ export function BrandMark({
         <path d={MARK.arrow} fill="none" />
         <path d={MARK.arrowHead} fill="var(--mark-gap, #fff)" />
       </g>
-      <path d={MARK.arrow} fill="none" stroke="url(#jc-gold)" strokeWidth={MARK.arrowWeight} strokeLinecap="round" />
-      <path d={MARK.arrowHead} fill="url(#jc-gold)" stroke="url(#jc-gold)" strokeWidth="1" strokeLinejoin="round" />
+      <path d={MARK.arrow} fill="none" stroke={`url(#${gold})`} strokeWidth={MARK.arrowWeight} strokeLinecap="round" />
+      <path d={MARK.arrowHead} fill={`url(#${gold})`} stroke={`url(#${gold})`} strokeWidth="1" strokeLinejoin="round" />
 
       {coins
         ? MARK.coins.map((y) => (
