@@ -59,7 +59,8 @@ export default async function SettingsPage() {
         <div className="panel">
           <header><div><h2>The home page</h2><p>The first thing every visitor reads. Say what you lend, to whom, and why you.</p></div></header>
           <div className="body">
-            {text('hero_headline', 'Headline', { max: 160 })}
+            {text('hero_kicker', 'The small line above the headline', { max: 120, placeholder: 'Jukiwa Credit Limited' })}
+            {text('hero_headline', 'Headline', { max: 160, placeholder: 'Where your dreams find funding.' })}
             {prose('hero_body', 'The sentence under it', { max: 600 })}
             <div className="grid-2">
               {text('stat_years', 'Years in property', { max: 20, placeholder: '24+' })}
@@ -156,7 +157,7 @@ export default async function SettingsPage() {
               <div className="field">
                 <label htmlFor="brand_primary">Main colour</label>
                 <input id="brand_primary" name="brand_primary" type="color" defaultValue={c.brand_primary} />
-                <p className="help">Buttons, links, the logo. Jukiwa green is #059652.</p>
+                <p className="help">Buttons, links, the logo. Jukiwa green is #1e5c35.</p>
               </div>
               <div className="field">
                 <label htmlFor="brand_accent">Accent</label>

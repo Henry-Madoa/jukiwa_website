@@ -26,7 +26,7 @@ const display = Bricolage_Grotesque({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#04281d',
+  themeColor: '#0b2a18',
   width: 'device-width',
   initialScale: 1,
 };

@@ -5,15 +5,27 @@ import { formatMoney, telHref } from '@/lib/format.ts';
 import { cdn } from '@/lib/cloudinary.ts';
 import { LoanCalculator } from './calculator.tsx';
 import { EnquiryForm } from './forms.tsx';
-import { FaqList, PostCard, ProductCard, QuoteCard } from './blocks.tsx';
+import { COMPANY_VALUES, CtaBand, FaqList, PostCard, ProductCard, QuoteCard } from './blocks.tsx';
 import { Flag, Icon } from './icons.tsx';
-import { JsonLd } from './prose.tsx';
+import { JsonLd, Prose } from './prose.tsx';
+import { BRAND_SLOGAN, BrandMark } from '@/app/brand.tsx';
 
 /*
- * The home page, in the order a careful borrower's questions arrive: what do you lend and what
- * would it cost me (the hero and its calculator), can I trust you (the figures, the group behind
- * us), how does it work, what do others say — and then, at every point, one obvious next step.
+ * The home page, in the order a careful borrower's questions arrive: who is Jukiwa Credit (the
+ * hero, with the company's own logo, and then its story, mission and values), what do you fund and
+ * what would it cost me (the dreams, the loans, the calculator), how does it work, what do others
+ * say — and then, at every point, one obvious next step.
  */
+
+/* The people Jukiwa Credit lends to, each with the thing they are actually trying to do. */
+const DREAMS: [icon: 'home' | 'building' | 'key' | 'pin' | 'plane' | 'trend', who: string, dream: string, href: string][] = [
+  ['home', 'Landlords', 'Turn the rent your building earns into money you can use today — repaid from the rent itself.', '/loans'],
+  ['building', 'Builders & developers', 'Finish the last stretch of your building, and start earning from it sooner.', '/loans'],
+  ['key', 'Home buyers', 'Move from paying rent to owning a home of your own.', '/loans'],
+  ['pin', 'Land owners', 'Buy the plot you have been eyeing, or unlock the value of the title you already hold.', '/loans'],
+  ['plane', 'Kenyans abroad', 'Build and invest at home from London, Houston or Toronto — we manage it on the ground.', '/diaspora'],
+  ['trend', 'Businesses', 'Grow the business that grows your property, with finance secured on what you own.', '/loans'],
+];
 
 /** "Unlock the money in your property." → the last two words get the gold underline. */
 function Headline({ text }: { text: string }) {
@@ -44,7 +56,7 @@ export default async function HomePage() {
     : null;
   const phone = company.phone_primary;
 
-  const audiences = ['Landlords', 'Developers', 'Home buyers', 'Kenyans abroad', 'Land owners', 'Property sellers', 'Small businesses'];
+  const hq = branches.find((b) => b.kind === 'HQ');
 
   return (
     <>
@@ -67,31 +79,38 @@ export default async function HomePage() {
           <span className="hero-shade" />
           <span className="orb orb-1" /><span className="orb orb-2" /><span className="grid" />
         </div>
-        <div className="wrap hero-grid">
-          <div>
-            <h1 className="display-1"><Headline text={company.hero_headline ?? 'Unlock the money in your property.'} /></h1>
-            <p className="lead">{company.hero_body}</p>
+        <div className="wrap hero-grid hero-grid-brand">
+          {/* The company itself, large: the logo as it is printed, on its own white plate. */}
+          <div className="brand-stage">
+            <div className="brand-plate">
+              <BrandMark size={240} logoUrl={company.logo_url} title={company.name} />
+              <p className="plate-name">{company.name.replace(/\s+Limited$/i, ' Ltd')}</p>
+              <span className="plate-rule" aria-hidden="true" />
+              <p className="plate-slogan">{BRAND_SLOGAN}</p>
+            </div>
+            <div className="float-chip c1">
+              <span className="chip-ico" aria-hidden="true"><Icon name="home" size={20} /></span>
+              <span>{company.stat_years ?? '24+'} years in property<small>Valuing, letting and managing it</small></span>
+            </div>
+            <div className="float-chip c2">
+              <span className="chip-ico" aria-hidden="true"><Icon name="plane" size={20} /></span>
+              <span>Kenya &amp; the diaspora<small className="mini-flags"><Flag country="gb" /><Flag country="us" /><Flag country="ca" /> London office</small></span>
+            </div>
+          </div>
+
+          <div className="hero-copy">
+            {company.hero_kicker ? <span className="eyebrow">{company.hero_kicker}</span> : null}
+            <h1 className="display-1"><Headline text={company.hero_headline ?? `${BRAND_SLOGAN}.`} /></h1>
+            <p className="lead">{company.hero_body ?? company.about_intro}</p>
             <div className="btn-row">
               <Link href="/apply" className="btn btn-accent btn-lg">Apply in 5 minutes <Icon name="arrow" size={18} data-arrow="" /></Link>
-              <Link href="/loans" className="btn btn-light btn-lg">Explore our loans</Link>
+              <a href="#about" className="btn btn-light btn-lg">Meet Jukiwa Credit</a>
             </div>
             <ul className="hero-proof">
               <li><Icon name="clock" size={18} /> Callback in {company.stat_turnaround ?? '30 min'}</li>
               <li><Icon name="shield" size={18} /> {company.indemnity_cover ?? 'KES 500M'} indemnity cover</li>
               <li><Icon name="lock" size={18} /> No ID uploads online</li>
             </ul>
-          </div>
-
-          <div className="hero-card-wrap">
-            <div className="float-chip c1">
-              <span className="chip-ico" aria-hidden="true">🏢</span>
-              <span>Up to 10× your rent<small>Rent advance, repaid from rent</small></span>
-            </div>
-            <LoanCalculator products={products.map(toTerms)} variant="hero" title="What could you get?" />
-            <div className="float-chip c2">
-              <span className="chip-ico" aria-hidden="true">✈️</span>
-              <span>Diaspora friendly<small className="mini-flags"><Flag country="gb" /><Flag country="us" /><Flag country="ca" /> London office</small></span>
-            </div>
           </div>
         </div>
       </section>
@@ -108,12 +127,81 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* --------------------------------------------------------------- marquee */}
-      <div className="marquee" aria-hidden="true" style={{ marginTop: 56 }}>
-        <div className="marquee-track">
-          {[...audiences, ...audiences].map((a, i) => <span key={i} className="marquee-item"><span>✦</span>{a}</span>)}
+      {/* ----------------------------------------------------------------- about */}
+      <section className="section" id="about">
+        <div className="wrap split" style={{ alignItems: 'start' }}>
+          <div className="stack" style={{ '--stack': '22px' } as React.CSSProperties}>
+            <span className="eyebrow">Who we are</span>
+            <h2 className="display-2">Meet <span className="hl-under">Jukiwa Credit</span>.</h2>
+            {company.about_intro ? <p className="lead">{company.about_intro}</p> : null}
+            <Prose text={company.about_story} />
+            <Link href="/about" className="link-arrow">Our full story and leadership <Icon name="arrow" size={18} /></Link>
+          </div>
+          <div className="stack" style={{ '--stack': '16px' } as React.CSSProperties}>
+            {company.mission ? (
+              <div className="tile dark" data-reveal="">
+                <span className="tile-ico"><Icon name="zap" size={24} /></span>
+                <h3 style={{ color: '#fff' }}>Our mission</h3>
+                <p>{company.mission}</p>
+              </div>
+            ) : null}
+            {company.vision ? (
+              <div className="tile gold" data-reveal="">
+                <span className="tile-ico"><Icon name="globe" size={24} /></span>
+                <h3>Our vision</h3>
+                <p>{company.vision}</p>
+              </div>
+            ) : null}
+            <ul className="about-facts" data-reveal="">
+              <li><Icon name="building" size={20} /><span><b>Our own credit team</b>Jukiwa Credit Limited decides every loan itself — quickly, and on what your property is really worth.</span></li>
+              <li><Icon name="pin" size={20} /><span><b>{hq ? `Head office in ${hq.town ?? hq.name}` : 'Offices across Kenya'}</b>{branches.map((b) => b.town ?? b.name).join(' · ')}</span></li>
+              <li><Icon name="users" size={20} /><span><b>One team, start to finish</b>The person who takes your call is the person who sees your loan through.</span></li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- values */}
+      <section className="section section-cream">
+        <div className="wrap">
+          <div className="section-head center">
+            <span className="eyebrow">What we stand for</span>
+            <h2 className="display-2">Five promises behind every loan.</h2>
+            <p className="lead">They are written as things you can hold us to — and you should.</p>
+          </div>
+          <div className="values-grid">
+            {COMPANY_VALUES.map(([icon, title, body], index) => (
+              <div className="value-card" key={title} data-reveal="">
+                <span className="value-n">0{index + 1}</span>
+                <span className="tile-ico"><Icon name={icon} size={24} /></span>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- dreams */}
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head">
+            <span className="eyebrow">Whose dreams we fund</span>
+            <h2 className="display-2">Whatever you are building, <span className="hl-under">we fund it</span>.</h2>
+            <p className="lead">Most of our clients came to us with a plan and a property. We look at both, and find the finance that fits.</p>
+          </div>
+          <div className="dream-grid">
+            {DREAMS.map(([icon, who, dream, href]) => (
+              <Link key={who} href={href} className="dream-card" data-reveal="">
+                <span className="tile-ico"><Icon name={icon} size={24} /></span>
+                <h3>{who}</h3>
+                <p>{dream}</p>
+                <span className="link-arrow">See how <Icon name="arrow" size={16} /></span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* -------------------------------------------------------------- products */}
       <section className="section">
@@ -128,6 +216,32 @@ export default async function HomePage() {
           </div>
           <div className="product-grid">
             {shown.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------ calculator */}
+      <section className="section section-dark" id="calculator">
+        <div className="wrap split">
+          <div className="stack" style={{ '--stack': '22px' } as React.CSSProperties}>
+            <span className="eyebrow">Your numbers</span>
+            <h2 className="display-2" style={{ color: '#fff' }}>What could Jukiwa Credit <span className="hl">fund for you?</span></h2>
+            <p className="lead">
+              Pick a loan, move the sliders, and see the monthly figure straight away. Nothing is saved and nobody calls
+              you unless you ask us to.
+            </p>
+            <ul className="ticks">
+              <li>Indicative rates and fees, shown before you apply</li>
+              <li>Rent advances of up to 10× the monthly rent</li>
+              <li>Your exact figures confirmed in writing before you sign</li>
+            </ul>
+            <div className="btn-row">
+              <Link href="/apply" className="btn btn-accent">Apply with these figures <Icon name="arrow" size={18} data-arrow="" /></Link>
+              <Link href="/calculator" className="btn btn-light">Full calculator</Link>
+            </div>
+          </div>
+          <div data-reveal="">
+            <LoanCalculator products={products.map(toTerms)} variant="hero" title="What could you get?" />
           </div>
         </div>
       </section>
@@ -336,6 +450,12 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <CtaBand
+        title={<>Your dream, <span className="hl">funded</span>.</>}
+        body="Tell us what you are building. Apply online in about five minutes, and a Jukiwa Credit officer calls you back — usually within 30 minutes during office hours."
+        phone={phone}
+      />
     </>
   );
 }

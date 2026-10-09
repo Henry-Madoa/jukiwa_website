@@ -111,6 +111,7 @@ export interface Settings {
   currency_symbol: string;
   logo_url: string | null;
   hero_image_url: string | null;
+  hero_kicker: string | null;
   hero_headline: string | null;
   hero_body: string | null;
   brand_primary: string;

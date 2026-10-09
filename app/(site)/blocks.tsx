@@ -10,6 +10,15 @@ import { Icon } from './icons.tsx';
  * needs the browser, so none of it costs the visitor a byte of JavaScript.
  */
 
+/* What Jukiwa Credit works by — each one written as something a borrower can hold us to. */
+export const COMPANY_VALUES: [icon: 'users' | 'trend' | 'shield' | 'spark' | 'home', title: string, body: string][] = [
+  ['users', 'Client-centric', 'We put our clients’ needs first, and work to exceed their expectations — including telling them when a loan is not right for them.'],
+  ['trend', 'Expertise', 'Experienced people who value, manage, let and sell property every day, so they can lend against it with confidence.'],
+  ['shield', 'Integrity', 'Honesty and transparency in every dealing: every rate, fee and total in writing before anything is signed.'],
+  ['spark', 'Innovation', 'Always looking for better ways to serve — like advances repaid from the rent itself, and statements you can see in real time.'],
+  ['home', 'Community', 'A commitment to the places we work, from Kilimani to Kitengela to Nakuru — and to Kenyans building at home from abroad.'],
+];
+
 export function PageHero({ eyebrow, title, lead, crumbs, children }: {
   eyebrow?: string;
   title: ReactNode;

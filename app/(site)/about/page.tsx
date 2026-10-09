@@ -4,7 +4,7 @@ import { getBranches, getSettings, getTeam, getTestimonials } from '@/lib/site.t
 import { cdn } from '@/lib/cloudinary.ts';
 import { initials } from '@/lib/format.ts';
 import { TEAM_CATEGORIES } from '@/lib/types.ts';
-import { CtaBand, PageHero, QuoteCard } from '../blocks.tsx';
+import { COMPANY_VALUES, CtaBand, PageHero, QuoteCard } from '../blocks.tsx';
 import { Icon } from '../icons.tsx';
 import { Prose } from '../prose.tsx';
 
@@ -13,15 +13,6 @@ export const metadata: Metadata = {
   description: 'Jukiwa Credit Limited offers rent advances, building finance and property loans across Kenya and for Kenyans abroad.',
   alternates: { canonical: '/about' },
 };
-
-/* What Jukiwa Credit works by — each one written as something a borrower can hold us to. */
-const VALUES: [icon: 'users' | 'trend' | 'shield' | 'spark' | 'home', title: string, body: string][] = [
-  ['users', 'Client-centric', 'We put our clients’ needs first, and work to exceed their expectations — including telling them when a loan is not right for them.'],
-  ['trend', 'Expertise', 'Experienced people who value, manage, let and sell property every day, so they can lend against it with confidence.'],
-  ['shield', 'Integrity', 'Honesty and transparency in every dealing: every rate, fee and total in writing before anything is signed.'],
-  ['spark', 'Innovation', 'Always looking for better ways to serve — like advances repaid from the rent itself, and statements you can see in real time.'],
-  ['home', 'Community', 'A commitment to the places we work, from Kilimani to Kitengela to Nakuru — and to Kenyans building at home from abroad.'],
-];
 
 export default async function AboutPage() {
   const [company, team, branches, testimonials] = await Promise.all([getSettings(), getTeam(), getBranches(), getTestimonials()]);
@@ -78,7 +69,7 @@ export default async function AboutPage() {
             <h2 className="display-2">Five values we work by.</h2>
           </div>
           <div className="bento" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))' }}>
-            {VALUES.map(([icon, title, body]) => (
+            {COMPANY_VALUES.map(([icon, title, body]) => (
               <div className="tile" key={title} style={{ gridColumn: 'auto' }} data-reveal="">
                 <span className="tile-ico"><Icon name={icon} size={24} /></span>
                 <h3>{title}</h3>

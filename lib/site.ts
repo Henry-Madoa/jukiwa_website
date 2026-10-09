@@ -30,7 +30,7 @@ export const getSettings = cache(async (): Promise<Settings> => {
   // A database that has been created but not set up yet still has to render a page.
   return {
     id: 1, name: 'Jukiwa Credit Limited', currency_symbol: 'KES',
-    brand_primary: '#059652', brand_accent: '#f5b82e', brand_deep: '#04281d',
+    brand_primary: '#1e5c35', brand_accent: '#d4a94a', brand_deep: '#0b2a18',
   } as Settings;
 });
 

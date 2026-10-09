@@ -10,27 +10,36 @@
  */
 
 :root {
-  /* Brand — overridden per-request from web_setting. Jukiwa green, gold, and a deep forest. */
-  --brand: #059652;
-  --brand-hover: #047a43;
-  --brand-deep: #04281d;
-  --accent: #f5b82e;
-  --accent-hover: #e0a41c;
+  /*
+   * Brand — overridden per-request from web_setting. Taken from the Jukiwa Credit logo: the forest
+   * green of the JC monogram, the gold of the rising arrow, and the near-black green of its shadow.
+   */
+  --brand: #1e5c35;
+  --brand-hover: #174a2a;
+  --brand-deep: #0b2a18;
+  --accent: #d4a94a;
+  --accent-hover: #bf9233;
   --on-brand: #ffffff;
-  --on-accent: #1d1606;
+  --on-accent: #231803;
+
+  /* The logo gold as a ramp, for the arrow, the coins and anything that should shine like them. */
+  --gold-light: #f3dc8e;
+  --gold: #d4a94a;
+  --gold-dark: #94692a;
+  --gold-gradient: linear-gradient(120deg, var(--gold-dark), var(--gold) 55%, var(--gold-light));
   /* The red of the Jukiwa roof — used sparingly, for a single mark of kinship with the parent. */
   --roof: #e2372b;
 
   /* Ink and surfaces */
-  --ink: #0d1f18;
-  --ink-soft: #3d5249;
-  --muted: #61746b;
-  --line: #e1e8e4;
-  --line-strong: #c9d4ce;
+  --ink: #10221a;
+  --ink-soft: #3e5047;
+  --muted: #627268;
+  --line: #e3e8e2;
+  --line-strong: #cbd4cc;
   --surface: #ffffff;
-  --surface-soft: #f6f8f6;
-  --surface-sunk: #edf2ef;
-  --cream: #fbf8f1;
+  --surface-soft: #f7f8f4;
+  --surface-sunk: #eef1ea;
+  --cream: #fbf7ec;
 
   /* Status */
   --ok: #0c7a47;
@@ -142,7 +151,7 @@ video {
 }
 
 /* The wordmark, shared by the site header, the footer, the admin and the sign-in page. */
-.wordmark { display: inline-flex; align-items: center; gap: 11px; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; }
 .wordmark svg, .wordmark img { flex: 0 0 auto; display: block; }
 .wordmark-text { display: grid; line-height: 1.1; }
 .wordmark-text strong {
@@ -151,8 +160,22 @@ video {
   font-size: 1.22rem;
   letter-spacing: -0.02em;
 }
-.wordmark-text strong em { font-style: normal; font-weight: 500; opacity: 0.78; }
-.wordmark-text small { font-size: 0.68rem; letter-spacing: 0.06em; opacity: 0.62; margin-top: 3px; }
+.wordmark-text strong em { font-style: normal; font-weight: 600; color: var(--mark-ink, var(--brand)); }
+.wordmark-text small {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mark-slogan, var(--gold-dark));
+  margin-top: 4px;
+}
+
+/* On the dark surfaces the letters go white, and the halo behind the arrow takes the surface colour. */
+.footer, .admin-side, .login-aside {
+  --mark-ink: #fff;
+  --mark-gap: var(--brand-deep);
+  --mark-slogan: var(--gold);
+}
 
 /* Scrollbars, where the browser lets us have an opinion. */
 * {

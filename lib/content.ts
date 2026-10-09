@@ -428,7 +428,7 @@ export async function deleteVacancy(id: number, actor: Actor): Promise<void> {
 const HEX = /^#[0-9a-f]{6}$/i;
 const colour = (value: unknown, label: string): string => {
   const cleaned = String(value ?? '').trim();
-  if (!HEX.test(cleaned)) throw new AppError(`${label} must be a colour like #059652`, 'VALIDATION');
+  if (!HEX.test(cleaned)) throw new AppError(`${label} must be a colour like #1e5c35`, 'VALIDATION');
   return cleaned.toLowerCase();
 };
 
@@ -436,7 +436,7 @@ const colour = (value: unknown, label: string): string => {
 const SETTING_TEXT: Record<string, number> = {
   name: 160, short_name: 60, tagline: 200, founded_year: 10, registration_no: 80, licence_no: 120,
   licence_note: 400, physical_address: 300, postal_address: 120, city: 80, country: 80, phone_primary: 30,
-  phone_secondary: 30, office_hours: 200, paybill_no: 20, paybill_note: 200, hero_headline: 160,
+  phone_secondary: 30, office_hours: 200, paybill_no: 20, paybill_note: 200, hero_kicker: 120, hero_headline: 160,
   whatsapp_number: 30, diaspora_phone: 30, stat_years: 20, stat_clients: 20, stat_counties: 20, stat_turnaround: 30,
   indemnity_cover: 60,
 };

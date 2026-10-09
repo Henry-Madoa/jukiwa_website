@@ -54,9 +54,9 @@ CREATE TABLE IF NOT EXISTS web_setting (
   hero_kicker        TEXT,
   hero_headline      TEXT,
   hero_body          TEXT,
-  brand_primary      TEXT NOT NULL DEFAULT '#059652',
-  brand_accent       TEXT NOT NULL DEFAULT '#f5b82e',
-  brand_deep         TEXT NOT NULL DEFAULT '#04281d',
+  brand_primary      TEXT NOT NULL DEFAULT '#1e5c35',
+  brand_accent       TEXT NOT NULL DEFAULT '#d4a94a',
+  brand_deep         TEXT NOT NULL DEFAULT '#0b2a18',
   portal_url         TEXT,
   facebook_url       TEXT,
   instagram_url      TEXT,
@@ -370,3 +370,9 @@ CREATE TABLE IF NOT EXISTS web_counter (
   key    TEXT PRIMARY KEY,
   value  INTEGER NOT NULL DEFAULT 0
 );
+
+-- The brand moved from the launch green and yellow to the colours of the Jukiwa Credit logo. A
+-- company still on the old defaults gets the new ones; one that has chosen its own keeps them.
+UPDATE web_setting
+   SET brand_primary = '#1e5c35', brand_accent = '#d4a94a', brand_deep = '#0b2a18'
+ WHERE lower(brand_primary) = '#059652' AND lower(brand_accent) = '#f5b82e' AND lower(brand_deep) = '#04281d';

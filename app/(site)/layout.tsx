@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { getBranches, getProducts, getSettings } from '@/lib/site.ts';
 import { telHref, whatsappHref } from '@/lib/format.ts';
-import { Wordmark } from '@/app/brand.tsx';
+import { BRAND_SLOGAN, Wordmark } from '@/app/brand.tsx';
 import { SiteHeader, StaffLink, type MenuGroup } from './site-nav.tsx';
 import { NewsletterForm } from './forms.tsx';
 import { Icon } from './icons.tsx';
@@ -117,7 +117,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
       </div>
 
       <SiteHeader
-        brand={<Wordmark name={short} logoUrl={company.logo_url} size={40} />}
+        brand={<Wordmark name={short} sub={BRAND_SLOGAN} logoUrl={company.logo_url} size={40} />}
         groups={groups}
         links={links}
         phone={phone}
@@ -131,7 +131,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
           <div className="footer-grid">
             <div>
               <Link href="/" className="brand" style={{ textDecoration: 'none' }}>
-                <Wordmark name={short} logoUrl={company.logo_url} size={44} />
+                <Wordmark name={short} sub={BRAND_SLOGAN} logoUrl={company.logo_url} size={44} />
               </Link>
               <p className="footer-about">{company.about_intro}</p>
               <div className="socials">
