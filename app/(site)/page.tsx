@@ -2,10 +2,9 @@ import Link from 'next/link';
 import { getFaqs, getPosts, getProducts, getSettings, getTestimonials, toTerms, getBranches } from '@/lib/site.ts';
 import { quote } from '@/lib/loan-math.ts';
 import { formatMoney, telHref } from '@/lib/format.ts';
-import { cdn } from '@/lib/cloudinary.ts';
 import { LoanCalculator } from './calculator.tsx';
 import { EnquiryForm } from './forms.tsx';
-import { COMPANY_VALUES, CtaBand, FaqList, PostCard, ProductCard, QuoteCard } from './blocks.tsx';
+import { COMPANY_VALUES, CtaBand, HeroBackdrop, FaqList, PostCard, ProductCard, QuoteCard } from './blocks.tsx';
 import { Flag, Icon } from './icons.tsx';
 import { JsonLd, Prose } from './prose.tsx';
 import { BRAND_SLOGAN, BrandMark } from '@/app/brand.tsx';
@@ -74,11 +73,7 @@ export default async function HomePage() {
 
       {/* ------------------------------------------------------------------ hero */}
       <section className="hero">
-        <div className="hero-bg" aria-hidden="true">
-          {company.hero_image_url ? <img className="hero-photo" src={cdn(company.hero_image_url, { width: 2400 })} alt="" fetchPriority="high" /> : null}
-          <span className="hero-shade" />
-          <span className="orb orb-1" /><span className="orb orb-2" /><span className="grid" />
-        </div>
+        <HeroBackdrop />
         <div className="wrap hero-grid hero-grid-brand">
           {/* The company itself, large: the whole logo exactly as it is printed, on its own white plate. */}
           <div className="brand-stage">

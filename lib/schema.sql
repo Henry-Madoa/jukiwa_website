@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS web_setting (
   bank_details       TEXT,
   currency_symbol    TEXT NOT NULL DEFAULT 'KES',
   logo_url           TEXT,
-  hero_image_url     TEXT,
+  hero_image_url     TEXT,                -- retired: superseded by web_hero_image, read only by its one-off carry-over below
   hero_kicker        TEXT,
   hero_headline      TEXT,
   hero_body          TEXT,
@@ -370,6 +370,29 @@ CREATE TABLE IF NOT EXISTS web_counter (
   key    TEXT PRIMARY KEY,
   value  INTEGER NOT NULL DEFAULT 0
 );
+
+-- The library of hero background pictures. Every page hero — the home page, Diaspora, Calculator,
+-- Insights and the rest — shows one of the active ones, picked afresh in the visitor's browser on
+-- each visit, so the site does not open on the same picture twice in a row.
+CREATE TABLE IF NOT EXISTS web_hero_image (
+  id          SERIAL PRIMARY KEY,
+  image_url   TEXT NOT NULL,
+  label       TEXT,                    -- what is in the picture, for the people running the site
+  is_active   BOOLEAN NOT NULL DEFAULT TRUE,
+  sort        INTEGER NOT NULL DEFAULT 0,
+  created_at  TEXT NOT NULL,
+  created_by  TEXT
+);
+
+-- The one picture chosen under Company profile before the library existed becomes its first entry.
+-- Once only: the marker stops it coming back after somebody deliberately empties the library.
+INSERT INTO web_hero_image (image_url, label, created_at, created_by)
+SELECT hero_image_url, 'The original home page picture',
+       to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'), 'migration'
+  FROM web_setting
+ WHERE id = 1 AND hero_image_url IS NOT NULL
+   AND NOT EXISTS (SELECT 1 FROM web_counter WHERE key = 'hero_library_started');
+INSERT INTO web_counter (key, value) VALUES ('hero_library_started', 1) ON CONFLICT (key) DO NOTHING;
 
 -- The brand moved from the launch green and yellow to the colours of the Jukiwa Credit logo. A
 -- company still on the old defaults gets the new ones; one that has chosen its own keeps them.

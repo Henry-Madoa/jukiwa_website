@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { cdn } from '@/lib/cloudinary.ts';
+import { getHeroImages } from '@/lib/site.ts';
+import { HeroPhoto } from './hero-photo.tsx';
 import { formatDate, formatMoneyCompact, initials, telHref } from '@/lib/format.ts';
 import { AUDIENCES, POST_CATEGORIES, type Faq, type Post, type Product, type Testimonial } from '@/lib/types.ts';
 import { Icon } from './icons.tsx';
@@ -19,6 +21,22 @@ export const COMPANY_VALUES: [icon: 'users' | 'trend' | 'shield' | 'spark' | 'ho
   ['home', 'Community', 'A commitment to the places we work, from Kilimani to Kitengela to Nakuru — and to Kenyans building at home from abroad.'],
 ];
 
+/*
+ * The home hero's backdrop — a green and a gold glow drifting over a fine grid, under a picture from
+ * the hero background library — shared by every page hero, so the whole site opens the same way.
+ * With no picture switched on, the green backdrop simply shows on its own.
+ */
+export async function HeroBackdrop() {
+  const photos = await getHeroImages();
+  return (
+    <div className="hero-bg" aria-hidden="true">
+      <HeroPhoto urls={photos.map((url) => cdn(url, { width: 2400 }))} />
+      <span className="hero-shade" />
+      <span className="orb orb-1" /><span className="orb orb-2" /><span className="grid" />
+    </div>
+  );
+}
+
 export function PageHero({ eyebrow, title, lead, crumbs, children }: {
   eyebrow?: string;
   title: ReactNode;
@@ -28,6 +46,7 @@ export function PageHero({ eyebrow, title, lead, crumbs, children }: {
 }) {
   return (
     <section className="page-hero">
+      <HeroBackdrop />
       <div className="wrap">
         {crumbs ? (
           <nav className="crumbs" aria-label="Breadcrumb">

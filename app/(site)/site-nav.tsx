@@ -115,7 +115,7 @@ export function SiteHeader({
                 <span className="dot"><Icon name="phone" size={16} /></span>{phone}
               </a>
             ) : null}
-            <Link href="/apply" className="btn btn-primary btn-sm">Apply <span className="hide-sm">now</span> <Icon name="arrow" size={16} data-arrow="" /></Link>
+            <Link href="/apply" className="btn btn-accent btn-sm"><span>Apply<span className="hide-sm"> now</span></span> <Icon name="arrow" size={16} data-arrow="" /></Link>
             <button type="button" className="burger" aria-label="Open the menu" aria-expanded={drawer} onClick={() => setDrawer(true)}>
               <Icon name="menu" size={22} />
             </button>

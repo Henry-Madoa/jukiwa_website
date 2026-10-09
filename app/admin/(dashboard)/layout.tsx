@@ -25,6 +25,7 @@ const GROUPS: Record<string, string> = {
   PRODUCTS: 'Lending',
   NEWS: 'Publishing',
   TESTIMONIALS: 'Publishing',
+  HERO_IMAGES: 'Publishing',
   FAQS: 'Publishing',
   TEAM: 'Company',
   BRANCHES: 'Company',

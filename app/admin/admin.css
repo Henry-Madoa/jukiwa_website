@@ -988,3 +988,36 @@ a.tile-stat:hover { border-color: var(--brand); transform: translateY(-2px); box
 .admin-brand .wordmark-text strong { font-size: 1rem; color: #fff; }
 .admin-brand .wordmark-text small { color: rgb(255 255 255 / 0.55); }
 .login-brand .wordmark-text strong { font-size: 1.1rem; }
+
+/* ============================================================ hero background library */
+
+.hero-library { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; align-items: start; }
+.hero-card { display: grid; gap: 8px; min-width: 0; }
+.hero-card .panel { overflow: hidden; }
+/* The preview wears the website's own shade, with a sample headline, so readability is judged here. */
+.hero-thumb { position: relative; aspect-ratio: 16 / 7.5; background: var(--brand-deep); overflow: hidden; }
+.hero-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--brand-deep) 92%, transparent), color-mix(in srgb, var(--brand-deep) 50%, transparent));
+}
+.hero-thumb-line {
+  position: absolute;
+  z-index: 1;
+  left: 16px;
+  bottom: 14px;
+  max-width: 70%;
+  font-family: var(--font-display-stack);
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1.15;
+  color: #fff;
+}
+.hero-thumb .badge { position: absolute; z-index: 1; top: 12px; right: 12px; }
+.hero-thumb[data-off='true'] img { filter: grayscale(1); opacity: 0.55; }
+.hero-card-row { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 16px; }
+.hero-card-row .field { flex: 0 0 96px; margin: 0; }
+.hero-card-row .check-row { flex: 1 1 auto; margin: 0 0 8px; }
+.hero-card-row .btn { margin-bottom: 4px; }

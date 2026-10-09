@@ -83,6 +83,7 @@ export const PAGES: PageObject[] = [
 
   { code: 'NEWS', label: 'Insights & news', route: '/admin/news', icon: '📰' },
   { code: 'TESTIMONIALS', label: 'Testimonials', route: '/admin/testimonials', icon: '💬' },
+  { code: 'HERO_IMAGES', label: 'Hero backgrounds', route: '/admin/hero-images', icon: '🖼' },
   { code: 'FAQS', label: 'Questions customers ask', route: '/admin/faqs', icon: '❓' },
 
   { code: 'TEAM', label: 'Leadership & team', route: '/admin/team', icon: '👥' },
@@ -138,6 +139,11 @@ export const ACTIONS = {
   TESTIMONIALS_CREATE: { page: 'TESTIMONIALS', tables: [['web_testimonial', 'insert']] },
   TESTIMONIALS_UPDATE: { page: 'TESTIMONIALS', tables: [['web_testimonial', 'modify']] },
   TESTIMONIALS_DELETE: { page: 'TESTIMONIALS', tables: [['web_testimonial', 'delete']] },
+
+  HERO_IMAGES_READ: { page: 'HERO_IMAGES', tables: [['web_hero_image', 'read']] },
+  HERO_IMAGES_CREATE: { page: 'HERO_IMAGES', tables: [['web_hero_image', 'insert']] },
+  HERO_IMAGES_UPDATE: { page: 'HERO_IMAGES', tables: [['web_hero_image', 'modify']] },
+  HERO_IMAGES_DELETE: { page: 'HERO_IMAGES', tables: [['web_hero_image', 'delete']] },
 
   FAQS_READ: { page: 'FAQS', tables: [['web_faq', 'read']] },
   FAQS_CREATE: { page: 'FAQS', tables: [['web_faq', 'insert']] },
@@ -300,7 +306,7 @@ export function linesToPermissions(lines: PermissionLine[]): PermissionSet {
 /* ================================================================== the standard sets */
 
 const READ_EVERYTHING: readonly ActionKey[] = [
-  'APPLICATIONS_READ', 'ENQUIRIES_READ', 'PRODUCTS_READ', 'NEWS_READ', 'TESTIMONIALS_READ', 'FAQS_READ',
+  'APPLICATIONS_READ', 'ENQUIRIES_READ', 'PRODUCTS_READ', 'NEWS_READ', 'TESTIMONIALS_READ', 'HERO_IMAGES_READ', 'FAQS_READ',
   'TEAM_READ', 'BRANCHES_READ', 'CAREERS_READ', 'SUBSCRIBERS_READ', 'SETTINGS_READ',
 ];
 
@@ -347,10 +353,11 @@ export const STANDARD_ROLES: { name: string; description: string; isSystem?: boo
   },
   {
     name: 'Marketing & Communications',
-    description: 'The company’s voice: insights, testimonials, the team, branches, careers and the newsletter list. Cannot see applications.',
+    description: 'The company’s voice: insights, testimonials, hero pictures, the team, branches, careers and the newsletter list. Cannot see applications.',
     actions: [
       'NEWS_READ', 'NEWS_CREATE', 'NEWS_UPDATE', 'NEWS_DELETE',
       'TESTIMONIALS_READ', 'TESTIMONIALS_CREATE', 'TESTIMONIALS_UPDATE', 'TESTIMONIALS_DELETE',
+      'HERO_IMAGES_READ', 'HERO_IMAGES_CREATE', 'HERO_IMAGES_UPDATE', 'HERO_IMAGES_DELETE',
       'FAQS_READ', 'FAQS_CREATE', 'FAQS_UPDATE',
       'TEAM_READ', 'TEAM_CREATE', 'TEAM_UPDATE', 'TEAM_DELETE',
       'BRANCHES_READ', 'BRANCHES_CREATE', 'BRANCHES_UPDATE',

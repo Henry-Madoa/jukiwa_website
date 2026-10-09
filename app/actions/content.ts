@@ -19,7 +19,7 @@
 import { revalidatePath } from 'next/cache';
 import { requireAction } from '@/lib/auth.ts';
 import { actionResult } from '@/lib/errors.ts';
-import { uploadImage } from '@/lib/cloudinary-server.ts';
+import { deleteImage, uploadImage, uploadImages } from '@/lib/cloudinary-server.ts';
 import * as content from '@/lib/content.ts';
 import * as inbox from '@/lib/inbox.ts';
 import type { ActionResult } from '@/lib/types.ts';
@@ -178,6 +178,42 @@ export async function deleteTestimonial(_prev: unknown, form: FormData): Promise
   });
 }
 
+/* ============================================================== hero backgrounds */
+
+export async function addHeroImages(_prev: unknown, form: FormData): Promise<ActionResult<{ count: number }>> {
+  return actionResult(async () => {
+    const actor = await requireAction('HERO_IMAGES_CREATE');
+    const uploaded = await uploadImages(form.getAll('photos'), 'hero');
+    await content.addHeroImages(uploaded.map((image) => image.url), form.get('label'), actor);
+    refresh();
+    return { count: uploaded.length };
+  });
+}
+
+export async function saveHeroImage(_prev: unknown, form: FormData): Promise<ActionResult<{ id: number }>> {
+  return actionResult(async () => {
+    const actor = await requireAction('HERO_IMAGES_UPDATE');
+    const saved = await content.saveHeroImage(id(form), {
+      label: form.get('label'),
+      sort: form.get('sort'),
+      isActive: form.get('is_active'),
+    }, actor);
+    refresh();
+    return { id: saved };
+  });
+}
+
+export async function deleteHeroImage(_prev: unknown, form: FormData): Promise<ActionResult<{ ok: true }>> {
+  return actionResult(async () => {
+    const actor = await requireAction('HERO_IMAGES_DELETE');
+    const file = await content.deleteHeroImage(id(form), actor);
+    // The row is gone and audited first; tidying Cloudinary afterwards can only fail quietly.
+    await deleteImage(file);
+    refresh();
+    return { ok: true as const };
+  });
+}
+
 /* =========================================================================== FAQ */
 
 export async function saveFaq(_prev: unknown, form: FormData): Promise<ActionResult<{ id: number }>> {
@@ -330,10 +366,9 @@ export async function saveSettings(_prev: unknown, form: FormData): Promise<Acti
   return actionResult(async () => {
     const actor = await requireAction('SETTINGS_MANAGE');
     const logo = await uploadImage(form.get('logo'), 'brand');
-    const hero = await uploadImage(form.get('hero_image'), 'brand');
     const values: Record<string, unknown> = {};
     for (const [key, value] of form.entries()) if (typeof value === 'string') values[key] = value;
-    await content.saveSettings(values, { logo: logo?.url ?? null, hero: hero?.url ?? null }, actor);
+    await content.saveSettings(values, { logo: logo?.url ?? null }, actor);
     refresh();
     return { ok: true as const };
   });

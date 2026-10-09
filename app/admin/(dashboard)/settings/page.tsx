@@ -174,15 +174,13 @@ export default async function SettingsPage() {
               <div>
                 <ImageField name="logo" label="Logo (optional)" current={c.logo_url} hint="Replaces the Jukiwa Credit logo everywhere. Leave empty to keep it. A PNG with a transparent background works best." />
                 {c.logo_url ? (
-                  <div className="check-row"><input id="remove_logo" name="remove_logo" type="checkbox" value="1" /><label htmlFor="remove_logo">Remove the uploaded logo and use the drawn mark</label></div>
+                  <div className="check-row"><input id="remove_logo" name="remove_logo" type="checkbox" value="1" /><label htmlFor="remove_logo">Remove the uploaded logo and use the Jukiwa Credit logo</label></div>
                 ) : null}
               </div>
-              <div>
-                <ImageField name="hero_image" label="Home page background picture" current={c.hero_image_url} hint="The photograph behind the home page headline, also used when a page is shared on WhatsApp or Facebook. A wide landscape picture, at least 2000px across." />
-                {c.hero_image_url ? (
-                  <div className="check-row"><input id="remove_hero" name="remove_hero" type="checkbox" value="1" /><label htmlFor="remove_hero">Remove it</label></div>
-                ) : null}
-              </div>
+              <p style={{ alignSelf: 'center', margin: 0, fontSize: '0.82rem', color: 'var(--muted)' }}>
+                The pictures behind the page banners are kept under{' '}
+                <a href="/admin/hero-images">Publishing › Hero backgrounds</a>.
+              </p>
             </div>
           </div>
         </div>

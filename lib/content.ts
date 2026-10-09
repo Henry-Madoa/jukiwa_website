@@ -8,13 +8,13 @@ import 'server-only';
  * trail, in that order, and every one takes the actor explicitly so the trail always names the
  * person who actually made the request.
  */
-import { all, one, run, audit, type Actor } from './db.ts';
+import { all, one, run, value, audit, type Actor } from './db.ts';
 import { AppError } from './errors.ts';
 import { uniqueSlug } from './slugify.ts';
 import * as v from './validate.ts';
 import {
   AUDIENCES, BRANCH_KINDS, CALC_MODES, FAQ_CATEGORIES, POST_CATEGORIES, TEAM_CATEGORIES,
-  type AuditEntry, type Branch, type Faq, type Post, type Product, type Settings, type TeamMember, type Testimonial, type Vacancy,
+  type AuditEntry, type Branch, type Faq, type HeroImage, type Post, type Product, type Settings, type TeamMember, type Testimonial, type Vacancy,
 } from './types.ts';
 
 const now = (): string => new Date().toISOString();
@@ -216,6 +216,53 @@ export async function saveTestimonial(id: number | null, input: TestimonialInput
 export async function deleteTestimonial(id: number, actor: Actor): Promise<void> {
   await run('DELETE FROM web_testimonial WHERE id = ?', id);
   await audit(actor, 'TESTIMONIAL_DELETE', 'web_testimonial', id, {});
+}
+
+/* ============================================================== hero backgrounds */
+
+export const adminHeroImages = (): Promise<HeroImage[]> => all<HeroImage>('SELECT * FROM web_hero_image ORDER BY sort, id');
+
+/** Adds a batch of freshly uploaded pictures to the end of the library, switched on. */
+export async function addHeroImages(urls: string[], label: unknown, actor: Actor): Promise<number[]> {
+  if (!urls.length) throw new AppError('Choose at least one picture to add', 'VALIDATION');
+  const name = v.text(label, 120);
+  let sort = Number(await value<number>('SELECT COALESCE(MAX(sort), -1) + 1 FROM web_hero_image')) || 0;
+  const created: number[] = [];
+  for (const url of urls) {
+    const { id } = await run(
+      'INSERT INTO web_hero_image (image_url, label, is_active, sort, created_at, created_by) VALUES (?,?,TRUE,?,?,?)',
+      url, name, sort++, now(), actor.name,
+    );
+    await audit(actor, 'HERO_IMAGE_CREATE', 'web_hero_image', id, { label: name, url });
+    created.push(id);
+  }
+  return created;
+}
+
+export interface HeroImageInput { label: unknown; sort: unknown; isActive: unknown }
+
+export async function saveHeroImage(id: number, input: HeroImageInput, actor: Actor): Promise<number> {
+  const before = await one<HeroImage>('SELECT * FROM web_hero_image WHERE id = ?', id);
+  if (!before) throw new AppError('That picture is no longer in the library', 'NOT_FOUND');
+  const row = {
+    label: v.text(input.label, 120),
+    sort: v.integer(input.sort, 0, 9999, 0)!,
+    is_active: v.boolean(input.isActive),
+  };
+  await run('UPDATE web_hero_image SET label=@label, sort=@sort, is_active=@is_active WHERE id=@id', { ...row, id });
+  await audit(actor, 'HERO_IMAGE_UPDATE', 'web_hero_image', id, {
+    label: row.label, active: `${before.is_active} → ${row.is_active}`, sort: `${before.sort} → ${row.sort}`,
+  });
+  return id;
+}
+
+/** Removes a picture from the library and returns its address, so the caller can remove the file from Cloudinary too. */
+export async function deleteHeroImage(id: number, actor: Actor): Promise<string | null> {
+  const before = await one<HeroImage>('SELECT * FROM web_hero_image WHERE id = ?', id);
+  if (!before) return null;
+  await run('DELETE FROM web_hero_image WHERE id = ?', id);
+  await audit(actor, 'HERO_IMAGE_DELETE', 'web_hero_image', id, { label: before.label, url: before.image_url });
+  return before.image_url;
 }
 
 /* =========================================================================== FAQ */
@@ -446,7 +493,7 @@ const SETTING_PROSE: Record<string, number> = {
 const SETTING_URLS = ['portal_url', 'facebook_url', 'instagram_url', 'x_url', 'youtube_url', 'tiktok_url', 'linkedin_url'];
 const SETTING_EMAILS = ['email', 'loans_email', 'diaspora_email'];
 
-export async function saveSettings(form: Record<string, unknown>, images: { logo?: string | null; hero?: string | null }, actor: Actor): Promise<void> {
+export async function saveSettings(form: Record<string, unknown>, images: { logo?: string | null }, actor: Actor): Promise<void> {
   const row: Record<string, string | null> = {};
   for (const [key, max] of Object.entries(SETTING_TEXT)) row[key] = v.text(form[key], max);
   for (const [key, max] of Object.entries(SETTING_PROSE)) row[key] = v.richText(form[key], max);
@@ -461,9 +508,7 @@ export async function saveSettings(form: Record<string, unknown>, images: { logo
 
   const before = await one<Settings>('SELECT * FROM web_setting WHERE id = 1');
   if (images.logo !== undefined) row.logo_url = images.logo ?? before?.logo_url ?? null;
-  if (images.hero !== undefined) row.hero_image_url = images.hero ?? before?.hero_image_url ?? null;
   if (v.boolean(form.remove_logo)) row.logo_url = null;
-  if (v.boolean(form.remove_hero)) row.hero_image_url = null;
 
   const keys = Object.keys(row);
   await run(

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getBranches, getProductTerms, getSettings } from '@/lib/site.ts';
 import { ApplyForm } from './apply-form.tsx';
+import { HeroBackdrop } from '../blocks.tsx';
 
 export const metadata: Metadata = {
   title: 'Apply online',
@@ -16,7 +17,8 @@ export default async function ApplyPage({ searchParams }: PageProps<'/apply'>) {
 
   return (
     <>
-      <section className="page-hero" style={{ paddingBottom: 140 }}>
+      <section className="page-hero page-hero-compact" style={{ paddingBottom: 140 }}>
+        <HeroBackdrop />
         <div className="wrap">
           <span className="eyebrow">Apply online · about 5 minutes</span>
           <h1 className="display-2">Let&rsquo;s get you <span className="hl">funded</span>.</h1>

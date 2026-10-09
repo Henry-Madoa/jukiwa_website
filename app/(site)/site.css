@@ -153,19 +153,30 @@
 .topbar .parent { color: var(--accent); font-weight: 600; }
 .topbar .roof { width: 14px; height: 10px; flex: 0 0 auto; }
 
+/*
+ * No white bar: the menu sits on the same deep green as the top bar and the hero, so the three
+ * read as one block and the links are white on green. Once the page scrolls it lifts off the
+ * content with a shadow, solid, so nothing passing underneath muddies the links.
+ */
 .header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: color-mix(in srgb, #fff 86%, transparent);
-  backdrop-filter: saturate(1.6) blur(14px);
-  -webkit-backdrop-filter: saturate(1.6) blur(14px);
+  background: var(--brand-deep);
+  color: #fff;
+  border-top: 1px solid rgb(255 255 255 / 0.06);
   border-bottom: 1px solid transparent;
   transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
 }
-.header[data-scrolled='true'] { border-bottom-color: var(--line); box-shadow: 0 8px 30px rgb(13 31 24 / 0.07); background: color-mix(in srgb, #fff 94%, transparent); }
+.header[data-scrolled='true'] {
+  border-bottom-color: rgb(255 255 255 / 0.08);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.22);
+}
 .header .wrap { display: flex; align-items: center; gap: 20px; height: var(--header-h); }
-.header .brand { color: var(--ink); text-decoration: none; flex: 0 0 auto; }
+.header .brand { color: #fff; text-decoration: none; flex: 0 0 auto; border-radius: 12px; }
+/* A slimmer glow for the gold button in a slim bar, and a gold focus ring that shows on green. */
+.header .btn-accent { box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 28%, transparent); }
+.header :focus-visible, .drawer :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .nav { display: flex; align-items: center; gap: 2px; margin-inline: auto; }
 .nav > a, .nav-item > button {
@@ -176,7 +187,7 @@
   border-radius: 999px;
   border: 0;
   background: none;
-  color: var(--ink-soft);
+  color: rgb(255 255 255 / 0.84);
   font: inherit;
   font-size: 0.93rem;
   font-weight: 600;
@@ -184,8 +195,9 @@
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
-.nav > a:hover, .nav-item > button:hover, .nav-item[data-open='true'] > button { background: var(--surface-sunk); color: var(--ink); }
-.nav > a[aria-current='page'], .nav-item[data-active='true'] > button { color: var(--brand); }
+.nav > a:hover, .nav-item > button:hover, .nav-item[data-open='true'] > button { background: rgb(255 255 255 / 0.1); color: #fff; }
+/* The page you are on wears an outlined pill. */
+.nav > a[aria-current='page'], .nav-item[data-active='true'] > button { color: #fff; box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.75); }
 .nav-item { position: relative; }
 .nav-item > button svg { transition: transform 0.2s; }
 .nav-item[data-open='true'] > button svg { transform: rotate(180deg); }
@@ -249,9 +261,9 @@
 .mega-foot a { padding: 0; color: var(--accent); font-weight: 700; background: none !important; display: inline-flex; align-items: center; gap: 6px; }
 
 .header-cta { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
-.header-phone { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font-weight: 700; font-size: 0.9rem; }
-.header-phone span.dot { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-sunk); color: var(--brand); }
-.burger { display: none; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line-strong); background: #fff; align-items: center; justify-content: center; cursor: pointer; color: var(--ink); }
+.header-phone { display: inline-flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-weight: 700; font-size: 0.9rem; }
+.header-phone span.dot { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgb(255 255 255 / 0.1); color: var(--accent); }
+.burger { display: none; width: 44px; height: 44px; border-radius: 12px; border: 1px solid rgb(255 255 255 / 0.28); background: rgb(255 255 255 / 0.06); align-items: center; justify-content: center; cursor: pointer; color: #fff; }
 
 .drawer {
   position: fixed;
@@ -302,7 +314,10 @@
  * The background photograph, under a shade that is darkest behind the headline and lightest behind
  * the calculator — so the words stay readable on any picture the admin uploads.
  */
-.hero-bg .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+.hero-bg .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; opacity: 0; transition: opacity 0.7s ease; }
+/* The picture is chosen in the browser (see hero-photo.tsx) and fades in over the green once it arrives. */
+.hero-bg .hero-photo[data-loaded='true'] { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .hero-bg .hero-photo { transition: none; } }
 .hero-bg .hero-shade {
   position: absolute;
   inset: 0;
@@ -487,6 +502,8 @@
 .calc-ceiling b { color: var(--ink); }
 
 .schedule { margin-top: 24px; }
+/* "Show the month-by-month schedule" is long for a small phone: let it wrap rather than spill. */
+.schedule > .btn { max-width: 100%; white-space: normal; text-align: left; }
 .schedule table { width: 100%; border-collapse: collapse; font-size: 0.86rem; font-variant-numeric: tabular-nums; }
 .schedule th, .schedule td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: right; }
 .schedule th:first-child, .schedule td:first-child { text-align: left; }
@@ -676,9 +693,9 @@
   border: 1px solid rgb(255 255 255 / 0.14);
   backdrop-filter: blur(10px);
 }
-.diaspora-card dl { margin: 0; display: grid; gap: 16px; }
+.diaspora-card dl { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 .diaspora-card dt { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgb(255 255 255 / 0.55); }
-.diaspora-card dd { margin: 4px 0 0; font-size: 1.05rem; font-weight: 600; }
+.diaspora-card dd { margin: 4px 0 0; font-size: 1.05rem; font-weight: 600; overflow-wrap: anywhere; }
 .diaspora-card dd a { color: #fff; text-decoration: none; }
 .diaspora-card dd a:hover { color: var(--accent); }
 
@@ -860,20 +877,9 @@
   isolation: isolate;
   overflow: hidden;
   padding-block: clamp(56px, 8vw, 104px) clamp(56px, 7vw, 88px);
-  background:
-    radial-gradient(800px 420px at 90% -20%, color-mix(in srgb, var(--brand) 55%, transparent), transparent 62%),
-    radial-gradient(600px 360px at 0% 120%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%),
-    var(--brand-deep);
+  /* The backdrop itself is the home hero's: see HeroBackdrop and .hero-bg. */
+  background: var(--brand-deep);
   color: #fff;
-}
-.page-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: linear-gradient(to bottom, #000, transparent 90%);
 }
 .page-hero h1 { color: #fff; margin-top: 18px; max-width: 18ch; }
 .page-hero .lead { color: rgb(255 255 255 / 0.78); margin-top: 18px; }
@@ -881,6 +887,24 @@
 .crumbs a { color: inherit; text-decoration: none; }
 .crumbs a:hover { color: var(--accent); }
 .page-hero .btn-row { margin-top: 30px; }
+
+/*
+ * On a desktop every page banner fills the screen below the menu, as the home page does — a short
+ * one (Privacy, Terms) no longer stops halfway down, and a tall one (Diaspora) no longer runs past
+ * the bottom: the spacing scales with the height of the window, and the content sits centred. The
+ * Apply banner is the exception, being short on purpose so the form can rise into it.
+ */
+@media (min-width: 961px) {
+  .page-hero:not(.page-hero-compact) {
+    min-height: calc(100svh - var(--header-h) - 40px);
+    display: flex;
+    align-items: center;
+    padding-block: clamp(20px, 4vh, 64px);
+  }
+  .page-hero:not(.page-hero-compact) > .wrap { width: 100%; }
+  .page-hero:not(.page-hero-compact) .lead { margin-top: clamp(10px, 2vh, 18px); }
+  .page-hero:not(.page-hero-compact) .btn-row { margin-top: clamp(16px, 3vh, 30px); }
+}
 
 /* ======================================================================= product page */
 
@@ -1091,6 +1115,8 @@
   .header-cta { gap: 8px; }
 }
 @media (max-width: 400px) {
+  /* A long button label wraps on a small phone rather than run off the screen. */
+  .btn { max-width: 100%; white-space: normal; }
   .header .wrap { gap: 10px; }
   .header-cta { gap: 6px; }
   .header-cta .btn { padding-inline: 12px; }
@@ -1099,7 +1125,8 @@
   .header .wordmark-text strong { font-size: 1.05rem; }
   .burger { width: 40px; height: 40px; }
 }
-@media (max-width: 340px) {
+/* Too narrow for the name in full: the logo speaks for itself rather than show "Jukiwa Cr…". */
+@media (max-width: 380px) {
   .header .wordmark-text { display: none; }
 }
 
@@ -1220,8 +1247,8 @@
  */
 @media (min-width: 961px) {
   .hero:has(.hero-grid-brand) {
-    --hero-room: calc(100svh - var(--header-h) - 38px);
-    min-height: min(var(--hero-room), 860px);
+    /* 40px: the top bar and the menu's two hairlines. No cap, so a big monitor is filled too. */
+    min-height: calc(100svh - var(--header-h) - 40px);
     display: flex;
     align-items: center;
     padding-block: clamp(20px, 3.5vh, 48px) clamp(92px, 12vh, 128px);

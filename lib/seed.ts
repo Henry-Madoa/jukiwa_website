@@ -109,7 +109,7 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
          mission = @mission, vision = @vision, founded_year = @founded,
          physical_address = @address, postal_address = @postal, city = @city, country = 'Kenya', map_embed_url = @map,
          phone_primary = @phone1, phone_secondary = @phone2, email = @email, loans_email = @loansEmail, office_hours = @hours,
-         paybill_no = @paybill, paybill_note = @paybillNote, hero_image_url = @heroImage, hero_headline = @headline, hero_body = @heroBody,
+         paybill_no = @paybill, paybill_note = @paybillNote, hero_headline = @headline, hero_body = @heroBody,
          whatsapp_number = @whatsapp, diaspora_phone = @diasporaPhone, diaspora_email = @diasporaEmail,
          facebook_url = @facebook, instagram_url = @instagram, x_url = @x, youtube_url = @youtube,
          stat_years = @years, stat_counties = @counties, stat_turnaround = @turnaround, indemnity_cover = @indemnity,
@@ -138,7 +138,6 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
         hours: 'Monday to Friday, 8.00 am – 5.00 pm · Saturday, 9.00 am – 1.00 pm',
         paybill: '4224534',
         paybillNote: 'Account number: your loan number',
-        heroImage: photo('1545324418-cc1a3fa10c00', 2400),
         headline: 'Where your dreams find funding.',
         heroBody: 'Jukiwa Credit Limited is a Kenyan property finance company. We fund landlords, builders, home buyers and Kenyans abroad — with rent advances, building finance and property loans, from a team that has managed Kenyan property for over 24 years.',
         whatsapp: '+254 743 227 881',
@@ -156,6 +155,16 @@ export async function seedDatabase(options: { demo?: boolean } = {}): Promise<Se
       },
     );
     created.push('company profile');
+
+    // A first picture for the page banners, set up with the company and only then: a library the
+    // company has emptied on purpose is not refilled by the next run.
+    if (await isEmpty('web_hero_image')) {
+      await run(
+        'INSERT INTO web_hero_image (image_url, label, is_active, sort, created_at, created_by) VALUES (?,?,TRUE,0,?,?)',
+        photo('1545324418-cc1a3fa10c00', 2400), 'Apartment blocks (stock photograph)', iso(new Date()), 'seed',
+      );
+      created.push('a hero background picture');
+    }
   }
 
   /* ------------------------------------------------------------------- branches */

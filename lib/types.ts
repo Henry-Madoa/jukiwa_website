@@ -110,7 +110,6 @@ export interface Settings {
   bank_details: string | null;
   currency_symbol: string;
   logo_url: string | null;
-  hero_image_url: string | null;
   hero_kicker: string | null;
   hero_headline: string | null;
   hero_body: string | null;
@@ -354,7 +353,18 @@ export interface Testimonial {
   created_at: IsoDateTime;
 }
 
-export type FaqCategory = 'GENERAL' | 'LOANS' | 'RENT_ADVANCE' | 'REPAYMENT' | 'DIASPORA';
+/** One picture in the hero background library. */
+export interface HeroImage {
+  id: number;
+  image_url: string;
+  label: string | null;
+  is_active: boolean;
+  sort: number;
+  created_at: IsoDateTime;
+  created_by: string | null;
+}
+
+export type FaqCategory ='GENERAL' | 'LOANS' | 'RENT_ADVANCE' | 'REPAYMENT' | 'DIASPORA';
 export const FAQ_CATEGORIES: { value: FaqCategory; label: string }[] = [
   { value: 'GENERAL', label: 'About Jukiwa Credit' },
   { value: 'LOANS', label: 'Loans & eligibility' },
