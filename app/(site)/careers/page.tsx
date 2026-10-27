@@ -24,6 +24,7 @@ export default async function CareersPage() {
       />
       <section className="section">
         <div className="wrap">
+          <h2 className="sr-only">Open roles</h2>
           {vacancies.length ? (
             <div className="faq" style={{ gap: 14 }}>
               {vacancies.map((v) => (

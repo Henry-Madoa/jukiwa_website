@@ -28,7 +28,7 @@ export default async function TermsPage() {
       <section className="section">
         <div className="wrap wrap-narrow prose">
           {sections.map(([title, body]) => (
-            <div key={title}><h3>{title}</h3><p style={{ marginTop: '0.8em' }}>{body}</p></div>
+            <div key={title}><h2>{title}</h2><p style={{ marginTop: '0.8em' }}>{body}</p></div>
           ))}
         </div>
       </section>

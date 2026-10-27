@@ -35,6 +35,8 @@ export default async function LoansPage() {
 
       <section className="section">
         <div className="wrap">
+          {/* The cards' own headings are h3: this names the section they sit in, for screen readers. */}
+          <h2 className="sr-only">All our loans</h2>
           <div className="product-grid">
             {products.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>

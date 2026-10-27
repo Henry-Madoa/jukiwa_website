@@ -48,6 +48,7 @@ export default async function VacancyPage({ params }: PageProps<'/careers/[slug]
       <section className="section">
         <div className="wrap wrap-narrow">
           {closed ? <div className="alert alert-info" style={{ marginBottom: 28 }}>This vacancy has closed. Thank you to everyone who applied.</div> : null}
+          <h2 className="sr-only">About the role</h2>
           <Prose text={vacancy.body} />
           <div className="btn-row" style={{ marginTop: 40 }}>
             {!closed ? (

@@ -26,6 +26,7 @@ export default async function BranchesPage() {
 
       <section className="section">
         <div className="wrap">
+          <h2 className="sr-only">Our offices</h2>
           <div className="branch-grid">
             {branches.map((b) => (
               <article className="branch" key={b.id} data-reveal="">

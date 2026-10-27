@@ -40,6 +40,7 @@ export default async function InsightsPage({ searchParams }: PageProps<'/insight
               <button type="submit" className="btn btn-primary btn-sm">Search</button>
             </form>
           </div>
+          <h2 className="sr-only">Articles</h2>
           {posts.length ? (
             <div className="post-grid">{posts.map((post) => <PostCard key={post.id} post={post} />)}</div>
           ) : (

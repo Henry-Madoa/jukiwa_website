@@ -82,7 +82,8 @@ export default async function ProductPage({ params }: PageProps<'/loans/[slug]'>
         <div className="wrap product-hero-grid">
           <div className="stack" style={{ '--stack': '36px' } as React.CSSProperties}>
             <div className="stack">
-              <span className="eyebrow">How it works</span>
+              <h2 className="sr-only">How the {product.name} works</h2>
+              <span className="eyebrow" aria-hidden="true">How it works</span>
               <p className="lead" style={{ color: 'var(--ink)' }}>{product.summary}</p>
               <Prose text={product.body} />
             </div>

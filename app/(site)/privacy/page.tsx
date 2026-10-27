@@ -61,7 +61,7 @@ export default async function PrivacyPage() {
         <div className="wrap wrap-narrow prose">
           {sections.map(([title, body]) => (
             <div key={title}>
-              <h3>{title}</h3>
+              <h2>{title}</h2>
               {body.map((paragraph) => <p key={paragraph.slice(0, 40)} style={{ marginTop: '0.8em' }}>{paragraph}</p>)}
             </div>
           ))}

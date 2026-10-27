@@ -848,7 +848,7 @@ a.tile-stat:hover { border-color: var(--brand); transform: translateY(-2px); box
 .password-toggle:hover { background: color-mix(in srgb, var(--brand) 8%, transparent); }
 .login-help { margin: 2px 0 0; font-size: 0.78rem; line-height: 1.55; color: var(--muted); text-align: center; }
 
-.login-back { font-size: 0.85rem; font-weight: 600; color: var(--muted); text-decoration: none; }
+.login-back { display: inline-flex; align-items: center; min-height: 24px; font-size: 0.85rem; font-weight: 600; color: var(--muted); text-decoration: none; }
 .login-back:hover { color: var(--brand); }
 
 /* ======================================================================= responsive */
