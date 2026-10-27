@@ -1022,10 +1022,21 @@ a.tile-stat:hover { border-color: var(--brand); transform: translateY(-2px); box
 .hero-card-row .check-row { flex: 1 1 auto; margin: 0 0 8px; }
 .hero-card-row .btn { margin-bottom: 4px; }
 
-/* ===================================================== Back and Next on a card (record-nav.tsx) */
+/* ================================================ Previous and Next on a card (record-nav.tsx) */
 
-.record-nav { display: inline-flex; align-items: center; gap: 8px; flex: 0 0 auto; }
-.record-pos { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.record-nav [aria-disabled='true'] { opacity: 0.4; pointer-events: none; }
-/* The bottom of a long card: Save on the left, Back and Next on the right, where the eye ends up. */
-.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+/* Business Central's pair: two small square arrow buttons, top right of the card, greyed at the ends. */
+.record-nav { display: inline-flex; align-items: center; gap: 2px; flex: 0 0 auto; }
+.record-step {
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 6px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.record-step:hover { background: var(--surface-sunk, rgb(0 0 0 / 0.06)); color: var(--brand); }
+.record-step:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+.record-step[aria-disabled='true'] { color: var(--muted); opacity: 0.45; cursor: default; }
+.record-step[aria-disabled='true']:hover { background: none; color: var(--muted); }

@@ -28,10 +28,7 @@ export default async function TeamCardPage({ params }: { params: Promise<{ id: s
         <input type="hidden" name="id" value={member.id} />
         <fieldset disabled={!mayEdit} style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 20 }}>
           <TeamFields member={member} branches={branches} />
-          <div className="card-foot">
-            {mayEdit ? <Submit>Save profile</Submit> : <span />}
-            {nav}
-          </div>
+          {mayEdit ? <div><Submit>Save profile</Submit></div> : null}
         </fieldset>
       </ActionForm>
       {canAction(user, 'TEAM_DELETE') ? (

@@ -23,17 +23,14 @@ export default async function PostCardPage({ params }: { params: Promise<{ id: s
       <div className="crumb">
         <Link href="/admin/news">Insights & news</Link><span aria-hidden="true">›</span>{post.title}
         <span style={{ flex: 1 }} />
-        {nav}
         {post.is_published ? <Link href={`/insights/${post.slug}`} target="_blank" className="btn btn-ghost btn-xs">View on the site ↗</Link> : null}
+        {nav}
       </div>
       <ActionForm action={savePost} success="Saved.">
         <input type="hidden" name="id" value={post.id} />
         <fieldset disabled={!mayEdit} style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 20 }}>
           <PostFields post={post} />
-          <div className="card-foot">
-            {mayEdit ? <Submit>Save article</Submit> : <span />}
-            {nav}
-          </div>
+          {mayEdit ? <div><Submit>Save article</Submit></div> : null}
         </fieldset>
       </ActionForm>
       {canAction(user, 'NEWS_DELETE') ? (

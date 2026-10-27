@@ -23,17 +23,14 @@ export default async function VacancyCardPage({ params }: { params: Promise<{ id
       <div className="crumb">
         <Link href="/admin/careers">Careers</Link><span aria-hidden="true">›</span>{vacancy.title}
         <span style={{ flex: 1 }} />
-        {nav}
         {vacancy.is_published ? <Link href={`/careers/${vacancy.slug}`} target="_blank" className="btn btn-ghost btn-xs">View on the site ↗</Link> : null}
+        {nav}
       </div>
       <ActionForm action={saveVacancy} success="Saved.">
         <input type="hidden" name="id" value={vacancy.id} />
         <fieldset disabled={!mayEdit} style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 20 }}>
           <VacancyFields vacancy={vacancy} />
-          <div className="card-foot">
-            {mayEdit ? <Submit>Save vacancy</Submit> : <span />}
-            {nav}
-          </div>
+          {mayEdit ? <div><Submit>Save vacancy</Submit></div> : null}
         </fieldset>
       </ActionForm>
       {canAction(user, 'CAREERS_DELETE') ? (

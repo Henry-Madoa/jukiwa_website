@@ -45,8 +45,8 @@ export default async function ProductCardPage({ params }: { params: Promise<{ id
             </p>
           </div>
           <span style={{ flex: 1 }} />
-          {nav}
           <Link href={`/loans/${product.slug}`} target="_blank" className="btn btn-ghost btn-xs">View on the site ↗</Link>
+          {nav}
         </header>
       </div>
 
@@ -54,10 +54,7 @@ export default async function ProductCardPage({ params }: { params: Promise<{ id
         <input type="hidden" name="id" value={product.id} />
         <fieldset disabled={!mayEdit} style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 20 }}>
           <ProductFields product={product} />
-          <div className="card-foot">
-            {mayEdit ? <Submit>Save product</Submit> : <span />}
-            {nav}
-          </div>
+          {mayEdit ? <div><Submit>Save product</Submit></div> : null}
         </fieldset>
       </ActionForm>
 
