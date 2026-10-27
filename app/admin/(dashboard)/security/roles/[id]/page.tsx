@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requirePage } from '@/lib/auth.ts';
-import { getRole, getRoleLines, roleHolders, permissionPages } from '@/lib/roles.ts';
+import { getRole, getRoleLines, listRoles, roleHolders, permissionPages } from '@/lib/roles.ts';
 import { listPermissionTables, ACTIONS, type ActionKey } from '@/lib/permissions.ts';
+import { locate } from '@/lib/neighbours.ts';
 import { saveRole, saveRolePermissions, grantRoleActions } from '@/app/actions/security.ts';
 import { ActionForm, RowFilter, Submit } from '../../../ui.tsx';
 import { SecurityTabs } from '../../tabs.tsx';
 import { PermissionGrid } from '../../permission-grid.tsx';
+import { RecordNav } from '../../../record-nav.tsx';
 
 export const metadata = { title: 'Permission Set' };
 
@@ -26,11 +28,13 @@ export default async function RoleCardPage({ params }: { params: Promise<{ id: s
   const role = await getRole(Number(id));
   if (!role) notFound();
 
-  const [lines, holders, tables] = await Promise.all([
+  const [lines, holders, tables, roles] = await Promise.all([
     getRoleLines(role.id),
     roleHolders(role.id),
     listPermissionTables(),
+    listRoles(),
   ]);
+  const around = locate(roles, role.id);
   const pages = permissionPages();
   const mayManage = user.is_system && !role.is_system;
 
@@ -40,6 +44,8 @@ export default async function RoleCardPage({ params }: { params: Promise<{ id: s
 
       <div className="crumb">
         <Link href="/admin/security/roles">Permission Sets</Link><span aria-hidden="true">›</span>{role.name}
+        <span style={{ flex: 1 }} />
+        <RecordNav base="/admin/security/roles" around={around} />
       </div>
 
       {role.is_system ? (

@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requirePage } from '@/lib/auth.ts';
-import { getUser, listRoles, extraRoles, userOverrides, permissionPages } from '@/lib/roles.ts';
+import { getUser, listUsers, listRoles, extraRoles, userOverrides, permissionPages } from '@/lib/roles.ts';
 import { listPermissionTables } from '@/lib/permissions.ts';
 import { formatDateTime } from '@/lib/format.ts';
+import { locate } from '@/lib/neighbours.ts';
 import { saveUser, resetUserPassword, deleteUser, saveUserPermissions } from '@/app/actions/security.ts';
 import { ActionForm, ActionFormRedirect, ConfirmSubmit, Submit } from '../../../ui.tsx';
 import { SecurityTabs } from '../../tabs.tsx';
 import { PermissionGrid } from '../../permission-grid.tsx';
+import { RecordNav } from '../../../record-nav.tsx';
 
 export const metadata = { title: 'User' };
 
@@ -17,12 +19,14 @@ export default async function UserCardPage({ params }: { params: Promise<{ id: s
   const account = await getUser(Number(id));
   if (!account) notFound();
 
-  const [roles, extras, overrides, tables] = await Promise.all([
+  const [roles, extras, overrides, tables, users] = await Promise.all([
     listRoles(),
     extraRoles(account.id),
     userOverrides(account.id),
     listPermissionTables(),
+    listUsers(),
   ]);
+  const around = locate(users, account.id);
   const pages = permissionPages();
   const mayManage = viewer.is_system;
   const isSelf = viewer.id === account.id;
@@ -33,6 +37,8 @@ export default async function UserCardPage({ params }: { params: Promise<{ id: s
 
       <div className="crumb">
         <Link href="/admin/security/users">Users</Link><span aria-hidden="true">›</span>{account.name}
+        <span style={{ flex: 1 }} />
+        <RecordNav base="/admin/security/users" around={around} />
       </div>
 
       {!mayManage ? (
