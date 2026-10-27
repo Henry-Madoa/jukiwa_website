@@ -14,7 +14,7 @@ import { Icon } from './icons.tsx';
  * as hover, so they work with a keyboard and on a tablet, and Escape closes whatever is open.
  */
 
-export interface MenuLink { href: string; label: string; hint?: string | null; icon?: string | null }
+export interface MenuLink { href: string; label: string; hint?: string | null }
 export interface MenuGroup { label: string; href: string; items: MenuLink[]; wide?: boolean; foot?: { text: string; href: string; label: string } }
 
 export function SiteHeader({
@@ -91,7 +91,6 @@ export function SiteHeader({
                 <div className={`mega ${group.wide ? '' : 'mega-narrow'}`} role="menu">
                   {group.items.map((item) => (
                     <Link key={item.href} href={item.href} role="menuitem">
-                      {item.icon ? <span className="ico" aria-hidden="true">{item.icon}</span> : null}
                       <span><b>{item.label}</b>{item.hint ? <small>{item.hint}</small> : null}</span>
                     </Link>
                   ))}
@@ -133,7 +132,7 @@ export function SiteHeader({
             <h6>{group.label}</h6>
             {group.items.map((item) => (
               <Link key={item.href} href={item.href}>
-                <span>{item.icon ? `${item.icon}  ` : ''}{item.label}</span>
+                <span>{item.label}</span>
                 <Icon name="arrow" size={18} />
               </Link>
             ))}

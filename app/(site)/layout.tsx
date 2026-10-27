@@ -35,17 +35,17 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
       label: 'Loans',
       href: '/loans',
       wide: true,
-      items: products.map((p) => ({ href: `/loans/${p.slug}`, label: p.name, hint: p.tagline, icon: p.icon })),
+      items: products.map((p) => ({ href: `/loans/${p.slug}`, label: p.name, hint: p.tagline })),
       foot: { text: 'Not sure which fits? Work it out in a minute.', href: '/calculator', label: 'Loan calculator' },
     },
     {
       label: 'Company',
       href: '/about',
       items: [
-        { href: '/about', label: 'About Jukiwa Credit', hint: 'Who we are and what we stand for', icon: '🏠' },
-        { href: '/about#leadership', label: 'Leadership', hint: 'The people you will deal with', icon: '👥' },
-        { href: '/branches', label: 'Branches & offices', hint: 'Walk in — we share every Jukiwa office', icon: '📍' },
-        { href: '/careers', label: 'Careers', hint: 'Join the founding team', icon: '💼' },
+        { href: '/about', label: 'About Jukiwa Credit', hint: 'Who we are and what we stand for' },
+        { href: '/about#leadership', label: 'Leadership', hint: 'The people you will deal with' },
+        { href: '/branches', label: 'Branches & offices', hint: 'Walk in — we share every Jukiwa office' },
+        { href: '/careers', label: 'Careers', hint: 'Join the founding team' },
       ],
     },
   ];

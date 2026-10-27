@@ -233,16 +233,6 @@
   transition: background 0.15s;
 }
 .mega a:hover { background: var(--surface-soft); }
-.mega .ico {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  background: color-mix(in srgb, var(--brand) 9%, transparent);
-  font-size: 1.25rem;
-}
 .mega b { display: block; font-size: 0.93rem; }
 .mega small { display: block; color: var(--muted); font-size: 0.8rem; line-height: 1.45; margin-top: 2px; }
 .mega-foot {
