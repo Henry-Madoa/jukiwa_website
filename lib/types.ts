@@ -353,6 +353,14 @@ export interface Testimonial {
   created_at: IsoDateTime;
 }
 
+/** Where a record sits in its list, for Back and Next on its card. */
+export interface Neighbours {
+  previous: { id: number; name: string } | null;
+  next: { id: number; name: string } | null;
+  position: number;
+  total: number;
+}
+
 /** One picture in the hero background library. */
 export interface HeroImage {
   id: number;

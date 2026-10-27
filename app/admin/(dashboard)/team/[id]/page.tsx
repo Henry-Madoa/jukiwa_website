@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requirePage } from '@/lib/auth.ts';
 import { canAction } from '@/lib/permissions.ts';
-import { adminBranches, adminTeamMember } from '@/lib/content.ts';
+import { adminBranches, adminTeamMember , adminNeighbours } from '@/lib/content.ts';
 import { saveTeamMember, deleteTeamMember } from '@/app/actions/content.ts';
 import { ActionForm, ActionFormRedirect, ConfirmSubmit, Submit } from '../../ui.tsx';
+import { RecordNav } from '../../record-nav.tsx';
 import { TeamFields } from '../team-fields.tsx';
 
 export const metadata = { title: 'Profile' };
@@ -12,18 +13,25 @@ export const metadata = { title: 'Profile' };
 export default async function TeamCardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requirePage('TEAM');
-  const [member, branches] = await Promise.all([adminTeamMember(Number(id)), adminBranches()]);
+  const [member, branches, around] = await Promise.all([adminTeamMember(Number(id)), adminBranches(), adminNeighbours('team', Number(id))]);
   if (!member) notFound();
+  const nav = <RecordNav base="/admin/team" around={around} />;
   const mayEdit = canAction(user, 'TEAM_UPDATE');
 
   return (
     <>
-      <div className="crumb"><Link href="/admin/team">Leadership & team</Link><span aria-hidden="true">›</span>{member.name}</div>
+      <div className="crumb"><Link href="/admin/team">Leadership & team</Link><span aria-hidden="true">›</span>{member.name}
+        <span style={{ flex: 1 }} />
+        {nav}
+      </div>
       <ActionForm action={saveTeamMember} success="Saved.">
         <input type="hidden" name="id" value={member.id} />
         <fieldset disabled={!mayEdit} style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 20 }}>
           <TeamFields member={member} branches={branches} />
-          {mayEdit ? <div><Submit>Save profile</Submit></div> : null}
+          <div className="card-foot">
+            {mayEdit ? <Submit>Save profile</Submit> : <span />}
+            {nav}
+          </div>
         </fieldset>
       </ActionForm>
       {canAction(user, 'TEAM_DELETE') ? (

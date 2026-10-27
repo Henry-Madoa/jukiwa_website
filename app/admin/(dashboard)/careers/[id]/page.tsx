@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requirePage } from '@/lib/auth.ts';
 import { canAction } from '@/lib/permissions.ts';
-import { adminVacancy } from '@/lib/content.ts';
+import { adminVacancy , adminNeighbours } from '@/lib/content.ts';
 import { saveVacancy, deleteVacancy } from '@/app/actions/content.ts';
 import { ActionForm, ActionFormRedirect, ConfirmSubmit, Submit } from '../../ui.tsx';
+import { RecordNav } from '../../record-nav.tsx';
 import { VacancyFields } from '../vacancy-fields.tsx';
 
 export const metadata = { title: 'Vacancy' };
@@ -12,8 +13,9 @@ export const metadata = { title: 'Vacancy' };
 export default async function VacancyCardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requirePage('CAREERS');
-  const vacancy = await adminVacancy(Number(id));
+  const [vacancy, around] = await Promise.all([adminVacancy(Number(id)), adminNeighbours('vacancies', Number(id))]);
   if (!vacancy) notFound();
+  const nav = <RecordNav base="/admin/careers" around={around} />;
   const mayEdit = canAction(user, 'CAREERS_UPDATE');
 
   return (
@@ -21,13 +23,17 @@ export default async function VacancyCardPage({ params }: { params: Promise<{ id
       <div className="crumb">
         <Link href="/admin/careers">Careers</Link><span aria-hidden="true">›</span>{vacancy.title}
         <span style={{ flex: 1 }} />
+        {nav}
         {vacancy.is_published ? <Link href={`/careers/${vacancy.slug}`} target="_blank" className="btn btn-ghost btn-xs">View on the site ↗</Link> : null}
       </div>
       <ActionForm action={saveVacancy} success="Saved.">
         <input type="hidden" name="id" value={vacancy.id} />
         <fieldset disabled={!mayEdit} style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 20 }}>
           <VacancyFields vacancy={vacancy} />
-          {mayEdit ? <div><Submit>Save vacancy</Submit></div> : null}
+          <div className="card-foot">
+            {mayEdit ? <Submit>Save vacancy</Submit> : <span />}
+            {nav}
+          </div>
         </fieldset>
       </ActionForm>
       {canAction(user, 'CAREERS_DELETE') ? (

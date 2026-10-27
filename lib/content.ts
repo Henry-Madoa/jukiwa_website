@@ -14,7 +14,7 @@ import { uniqueSlug } from './slugify.ts';
 import * as v from './validate.ts';
 import {
   AUDIENCES, BRANCH_KINDS, CALC_MODES, FAQ_CATEGORIES, POST_CATEGORIES, TEAM_CATEGORIES,
-  type AuditEntry, type Branch, type Faq, type HeroImage, type Post, type Product, type Settings, type TeamMember, type Testimonial, type Vacancy,
+  type AuditEntry, type Branch, type Faq, type HeroImage, type Neighbours, type Post, type Product, type Settings, type TeamMember, type Testimonial, type Vacancy,
 } from './types.ts';
 
 const now = (): string => new Date().toISOString();
@@ -28,6 +28,25 @@ export const adminProducts = (): Promise<(Product & { applications: number })[]>
   );
 
 export const adminProduct = (id: number): Promise<Product | undefined> => one<Product>('SELECT * FROM web_product WHERE id = ?', id);
+
+/*
+ * Back and Next on a card step through the records in exactly the order the list screen shows
+ * them, so each query here repeats its list's ORDER BY — change one, change both. Fixed strings
+ * only: nothing a request sends ever reaches this SQL.
+ */
+const CARD_LISTS = {
+  products: 'SELECT id, name FROM web_product ORDER BY sort, name',
+  posts: 'SELECT id, title AS name FROM web_post ORDER BY is_published, published_at DESC, id DESC',
+  team: 'SELECT id, name FROM web_team ORDER BY sort, name',
+  vacancies: 'SELECT id, title AS name FROM web_vacancy ORDER BY is_published DESC, created_at DESC, id DESC',
+} as const;
+
+/** The records either side of this one, and where it sits — for Back and Next on a card. */
+export async function adminNeighbours(list: keyof typeof CARD_LISTS, id: number): Promise<Neighbours> {
+  const rows = await all<{ id: number; name: string }>(CARD_LISTS[list]);
+  const at = rows.findIndex((row) => row.id === id);
+  return { previous: rows[at - 1] ?? null, next: rows[at + 1] ?? null, position: at + 1, total: rows.length };
+}
 
 export interface ProductInput {
   name: unknown; tagline: unknown; summary: unknown; body: unknown; icon: unknown; audience: unknown; calcMode: unknown;
@@ -127,7 +146,7 @@ export async function deleteProduct(id: number, actor: Actor): Promise<void> {
 /* ========================================================================== posts */
 
 export const adminPosts = (): Promise<Post[]> =>
-  all<Post>('SELECT * FROM web_post ORDER BY is_published, published_at DESC');
+  all<Post>('SELECT * FROM web_post ORDER BY is_published, published_at DESC, id DESC');
 
 export const adminPost = (id: number): Promise<Post | undefined> => one<Post>('SELECT * FROM web_post WHERE id = ?', id);
 
@@ -419,7 +438,7 @@ export async function deleteBranch(id: number, actor: Actor): Promise<void> {
 
 /* ===================================================================== vacancies */
 
-export const adminVacancies = (): Promise<Vacancy[]> => all<Vacancy>('SELECT * FROM web_vacancy ORDER BY is_published DESC, created_at DESC');
+export const adminVacancies = (): Promise<Vacancy[]> => all<Vacancy>('SELECT * FROM web_vacancy ORDER BY is_published DESC, created_at DESC, id DESC');
 
 export const adminVacancy = (id: number): Promise<Vacancy | undefined> => one<Vacancy>('SELECT * FROM web_vacancy WHERE id = ?', id);
 

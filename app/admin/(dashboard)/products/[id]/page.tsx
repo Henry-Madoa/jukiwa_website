@@ -2,21 +2,23 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requirePage } from '@/lib/auth.ts';
 import { canAction } from '@/lib/permissions.ts';
-import { adminProduct } from '@/lib/content.ts';
+import { adminNeighbours, adminProduct } from '@/lib/content.ts';
 import { toTerms } from '@/lib/site.ts';
 import { quote, suggestedAmount } from '@/lib/loan-math.ts';
 import { formatMoney } from '@/lib/format.ts';
 import { saveProduct, deleteProduct } from '@/app/actions/content.ts';
 import { ActionForm, ActionFormRedirect, ConfirmSubmit, Submit } from '../../ui.tsx';
 import { ProductFields } from '../product-fields.tsx';
+import { RecordNav } from '../../record-nav.tsx';
 
 export const metadata = { title: 'Loan product' };
 
 export default async function ProductCardPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requirePage('PRODUCTS');
-  const product = await adminProduct(Number(id));
+  const [product, around] = await Promise.all([adminProduct(Number(id)), adminNeighbours('products', Number(id))]);
   if (!product) notFound();
+  const nav = <RecordNav base="/admin/products" around={around} />;
 
   const mayEdit = canAction(user, 'PRODUCTS_UPDATE');
   const terms = toTerms(product);
@@ -43,6 +45,7 @@ export default async function ProductCardPage({ params }: { params: Promise<{ id
             </p>
           </div>
           <span style={{ flex: 1 }} />
+          {nav}
           <Link href={`/loans/${product.slug}`} target="_blank" className="btn btn-ghost btn-xs">View on the site ↗</Link>
         </header>
       </div>
@@ -51,7 +54,10 @@ export default async function ProductCardPage({ params }: { params: Promise<{ id
         <input type="hidden" name="id" value={product.id} />
         <fieldset disabled={!mayEdit} style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 20 }}>
           <ProductFields product={product} />
-          {mayEdit ? <div><Submit>Save product</Submit></div> : null}
+          <div className="card-foot">
+            {mayEdit ? <Submit>Save product</Submit> : <span />}
+            {nav}
+          </div>
         </fieldset>
       </ActionForm>
 
