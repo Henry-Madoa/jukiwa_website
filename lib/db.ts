@@ -42,8 +42,7 @@ function createPool(): Pool {
   }
   /*
    * SSL is configured here rather than left to the connection string: node-postgres is in the
-   * middle of changing what `sslmode=require` means, and a hosted database (Neon, Supabase,
-   * Render) presents a certificate chain Node does not carry. Stripping the parameter and saying
+   * middle of changing what `sslmode=require` means. Stripping the parameter and saying
    * what we mean keeps the behaviour the same across pg versions — and keeps a deprecation
    * warning out of every script's output.
    */
@@ -53,7 +52,9 @@ function createPool(): Pool {
 
   return new Pool({
     connectionString: cleaned,
-    ...(needsSsl ? { ssl: { rejectUnauthorized: false } } : {}),
+    // The certificate is verified: without that, anyone on the network path could stand in for the
+    // database and read every application. DB_SSL_NO_VERIFY=1 is for a host with a private CA only.
+    ...(needsSsl ? { ssl: { rejectUnauthorized: process.env.DB_SSL_NO_VERIFY !== '1' } } : {}),
 
     /*
      * Small on purpose.

@@ -207,7 +207,11 @@ export const permissionPages = () => PAGES.map(({ code, label, route, parent }) 
 /* ======================================================================== accounts */
 
 const USER_SELECT = `
-  SELECT u.id, u.name, u.email, u.role_id, r.name AS role_name, COALESCE(r.is_system, FALSE) AS is_system,
+  SELECT u.id, u.name, u.email, u.role_id, r.name AS role_name,
+         -- As lib/auth.ts reads it: the System Administrator set held as primary or as an extra.
+         COALESCE(r.is_system, FALSE) OR EXISTS (
+           SELECT 1 FROM web_user_role ur JOIN web_role x ON x.id = ur.role_id WHERE ur.user_id = u.id AND x.is_system
+         ) AS is_system,
          u.status, u.title, u.avatar_url, u.must_change_password, u.last_login_at, u.created_at, u.created_by
   FROM web_user u LEFT JOIN web_role r ON r.id = u.role_id`;
 
@@ -277,7 +281,9 @@ export async function updateUser(id: number, input: UserInput, actor: Actor): Pr
   }
 
   const nextRole = await getRole(row.roleId);
-  const losingSystem = before.is_system && (!nextRole?.is_system || row.status !== 'ACTIVE');
+  const keepsSystem = !!nextRole?.is_system
+    || (row.extra.length > 0 && !!(await one('SELECT 1 FROM web_role WHERE id = ANY(?) AND is_system', row.extra)));
+  const losingSystem = before.is_system && (!keepsSystem || row.status !== 'ACTIVE');
   if (losingSystem) await assertNotLastAdministrator(id);
 
   await run(

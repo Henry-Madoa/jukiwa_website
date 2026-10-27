@@ -154,6 +154,11 @@ export async function requirePage(code: string): Promise<SessionUser> {
 export async function requireAction(key: ActionKey): Promise<Actor & { user: SessionUser }> {
   const user = await currentUser();
   if (!user) throw new AppError('Your session has expired. Please sign in again.', 'FORBIDDEN');
+  // The layout holds such a user on the password screen, but an action is reachable without the
+  // layout — so a password somebody else chose must not be able to change anything here either.
+  if (user.must_change_password) {
+    throw new AppError('Change the password you were given before doing anything else.', 'FORBIDDEN');
+  }
   if (!canAction(user, key)) {
     throw new AppError('Your Permission Set does not allow that. Ask an administrator.', 'FORBIDDEN');
   }

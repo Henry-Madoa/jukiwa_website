@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   // rather than being traced into the bundle.
   serverExternalPackages: ["pg", "cloudinary"],
 
+  // No need to tell every visitor which framework, and so which advisories, to try.
+  poweredByHeader: false,
+
   images: {
     // Every uploaded image is delivered from Cloudinary. The seed content points at Unsplash, and
     // the leadership portraits at the sister company's own site, until the admin replaces them.

@@ -59,6 +59,11 @@ export function proxy(request: NextRequest): NextResponse {
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
+  // HTTPS only from here on, so a sign-in cannot be downgraded on a hostile Wi-Fi. Production
+  // only: a browser remembers it for localhost too, which would break plain-http development.
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
   if (isAdmin) {
     // Nothing behind the sign-in should ever be held by a shared cache or a proxy.
     response.headers.set('Cache-Control', 'no-store, must-revalidate');

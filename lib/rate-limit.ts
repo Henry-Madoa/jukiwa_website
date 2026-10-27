@@ -34,11 +34,21 @@ function sweep(now: number): void {
 }
 
 /**
- * The caller's address, as the proxy in front of us reports it. Spoofable without a trusted
- * proxy, which is why it gates a form and never an authorisation decision.
+ * The caller's address, as the proxy in front of us reports it. It gates a form, never an
+ * authorisation decision.
+ *
+ * Only what a proxy writes is believed. The *first* X-Forwarded-For entry is whatever the client
+ * sent, so trusting it let a script pick a fresh address per request and walk past every limit.
+ * x-real-ip (Vercel, nginx) and cf-connecting-ip (Cloudflare) are set by the platform, and the
+ * *last* X-Forwarded-For entry is the one our nearest proxy appended. CLIENT_IP_HEADER names a
+ * different header where the host documents one.
  */
 export function clientIp(headers: Headers): string {
+  const configured = process.env.CLIENT_IP_HEADER;
+  if (configured) return headers.get(configured)?.trim() || 'unknown';
+  const trusted = headers.get('x-real-ip') ?? headers.get('cf-connecting-ip');
+  if (trusted) return trusted.trim();
   const forwarded = headers.get('x-forwarded-for');
-  if (forwarded) return forwarded.split(',')[0]!.trim();
-  return headers.get('x-real-ip') ?? headers.get('cf-connecting-ip') ?? 'unknown';
+  if (forwarded) return forwarded.split(',').at(-1)!.trim() || 'unknown';
+  return 'unknown';
 }
