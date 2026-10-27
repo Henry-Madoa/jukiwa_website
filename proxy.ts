@@ -24,17 +24,24 @@ import { NextResponse, type NextRequest } from 'next/server';
  * origin. `unsafe-inline` for styles is required by the runtime theming (the brand colours are
  * injected as a <style> element) and by React's inline styles.
  */
-function contentSecurityPolicy(isAdmin: boolean): string {
+function contentSecurityPolicy(isAdmin: boolean, nonce: string | null): string {
+  // Next's runtime needs eval in development; production builds do not.
+  const evalInDev = process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : '';
   return [
     "default-src 'self'",
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
     "object-src 'none'",
-    // Next's runtime needs eval in development; production builds do not.
-    process.env.NODE_ENV === 'development'
-      ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
-      : "script-src 'self' 'unsafe-inline'",
+    /*
+     * The admin runs only the scripts this request's nonce vouches for, so injected markup cannot
+     * run script where a session can act. Its pages read the session, so they render per request
+     * anyway and the nonce costs nothing. The public pages are prerendered and cached — no request
+     * to stamp a nonce from — and keep 'unsafe-inline' for Next's inline payload scripts.
+     */
+    nonce
+      ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${evalInDev}`
+      : `script-src 'self' 'unsafe-inline'${evalInDev}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com https://www.jukiwa.co.ke",
@@ -49,12 +56,17 @@ export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
   const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/');
 
+  const nonce = isAdmin ? Buffer.from(crypto.randomUUID()).toString('base64') : null;
+  const csp = contentSecurityPolicy(isAdmin, nonce);
+
   const headers = new Headers(request.headers);
   headers.set('x-pathname', pathname);
+  // Next reads the nonce from the request's policy and stamps it on every script it renders.
+  if (nonce) headers.set('Content-Security-Policy', csp);
 
   const response = NextResponse.next({ request: { headers } });
 
-  response.headers.set('Content-Security-Policy', contentSecurityPolicy(isAdmin));
+  response.headers.set('Content-Security-Policy', csp);
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('X-Frame-Options', 'DENY');
