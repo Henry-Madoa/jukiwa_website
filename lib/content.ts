@@ -10,6 +10,7 @@ import 'server-only';
  */
 import { all, one, run, value, audit, type Actor } from './db.ts';
 import { AppError } from './errors.ts';
+import { locate } from './neighbours.ts';
 import { uniqueSlug } from './slugify.ts';
 import * as v from './validate.ts';
 import {
@@ -43,9 +44,7 @@ const CARD_LISTS = {
 
 /** The records either side of this one, and where it sits — for Back and Next on a card. */
 export async function adminNeighbours(list: keyof typeof CARD_LISTS, id: number): Promise<Neighbours> {
-  const rows = await all<{ id: number; name: string }>(CARD_LISTS[list]);
-  const at = rows.findIndex((row) => row.id === id);
-  return { previous: rows[at - 1] ?? null, next: rows[at + 1] ?? null, position: at + 1, total: rows.length };
+  return locate(await all<{ id: number; name: string }>(CARD_LISTS[list]), id);
 }
 
 export interface ProductInput {

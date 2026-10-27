@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { requirePage } from '@/lib/auth.ts';
-import { applicationCounts, listApplications } from '@/lib/inbox.ts';
+import { applicationCounts, listApplications, readApplicationFilter } from '@/lib/inbox.ts';
 import { adminProducts } from '@/lib/content.ts';
 import { formatDateShort, formatMoney, formatMoneyCompact } from '@/lib/format.ts';
-import { APPLICATION_STATUSES, OPEN_APPLICATION_STATUSES, type ApplicationStatus } from '@/lib/types.ts';
+import { APPLICATION_STATUSES, OPEN_APPLICATION_STATUSES } from '@/lib/types.ts';
 
 export const metadata = { title: 'Loan applications' };
 
@@ -16,9 +16,10 @@ export const metadata = { title: 'Loan applications' };
  */
 export default async function ApplicationsPage({ searchParams }: { searchParams: Promise<{ status?: string; q?: string; product?: string }> }) {
   await requirePage('APPLICATIONS');
-  const { status = 'OPEN', q = '', product = '' } = await searchParams;
-  const filter = status === 'ALL' ? '' : (status === 'OPEN' || APPLICATION_STATUSES.some((s) => s.value === status) ? status : 'OPEN') as ApplicationStatus | 'OPEN' | '';
-  const productId = Number(product) || null;
+  const params = await searchParams;
+  const { status = 'OPEN', product = '' } = params;
+  // Read once, shared with the card: Previous and Next there step through this same filtered list.
+  const { status: filter, q, productId, query } = readApplicationFilter(params);
 
   const [applications, counts, products] = await Promise.all([
     listApplications(filter, q, productId),
@@ -91,7 +92,7 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
                   return (
                     <tr key={a.id}>
                       <td>
-                        <Link href={`/admin/applications/${a.id}`} className="row-link">
+                        <Link href={`/admin/applications/${a.id}?${query}`} className="row-link">
                           {a.company_name ?? `${a.first_name} ${a.last_name}`}
                         </Link>
                         <span className="sub">

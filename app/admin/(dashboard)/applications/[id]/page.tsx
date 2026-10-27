@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requirePage } from '@/lib/auth.ts';
 import { canAction } from '@/lib/permissions.ts';
-import { getApplication } from '@/lib/inbox.ts';
+import { applicationNeighbours, getApplication, readApplicationFilter } from '@/lib/inbox.ts';
 import { adminProduct } from '@/lib/content.ts';
 import { toTerms } from '@/lib/site.ts';
 import { quote } from '@/lib/loan-math.ts';
@@ -10,16 +10,22 @@ import { formatDateTime, formatMoney, formatBp, telHref, whatsappHref } from '@/
 import { APPLICANT_TYPES, APPLICATION_STATUSES, COLLATERALS } from '@/lib/types.ts';
 import { setApplicationStatus, deleteApplication } from '@/app/actions/content.ts';
 import { ActionForm, ActionFormRedirect, ConfirmSubmit, Submit } from '../../ui.tsx';
+import { RecordNav } from '../../record-nav.tsx';
 
 export const metadata = { title: 'Loan application' };
 
 /** The happy path, in order. DECLINED and WITHDRAWN are exits from it, not steps on it. */
 const PATH = APPLICATION_STATUSES.filter((s) => s.value !== 'DECLINED' && s.value !== 'WITHDRAWN');
 
-export default async function ApplicationCardPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ApplicationCardPage({ params, searchParams }: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ status?: string; q?: string; product?: string }>;
+}) {
   const { id } = await params;
   const user = await requirePage('APPLICATIONS');
-  const a = await getApplication(Number(id));
+  // The filter of the list this card was opened from: Previous and Next stay inside that list.
+  const filter = readApplicationFilter(await searchParams);
+  const [a, around] = await Promise.all([getApplication(Number(id)), applicationNeighbours(Number(id), filter)]);
   if (!a) notFound();
 
   const product = a.product_id ? await adminProduct(a.product_id) : undefined;
@@ -38,7 +44,8 @@ export default async function ApplicationCardPage({ params }: { params: Promise<
   return (
     <>
       <div className="crumb">
-        <Link href="/admin/applications">Loan applications</Link><span aria-hidden="true">›</span>{a.no}
+        <Link href={`/admin/applications?${filter.query}`}>Loan applications</Link><span aria-hidden="true">›</span>{a.no}
+        <RecordNav base="/admin/applications" around={around} query={filter.query} />
       </div>
 
       <div className="panel">
@@ -166,7 +173,7 @@ export default async function ApplicationCardPage({ params }: { params: Promise<
                   For spam and duplicates. A real application that went nowhere should be marked Declined or Withdrawn
                   instead, so the numbers stay true.
                 </p>
-                <ActionFormRedirect action={deleteApplication} to="/admin/applications">
+                <ActionFormRedirect action={deleteApplication} to={`/admin/applications?${filter.query}`}>
                   <input type="hidden" name="id" value={a.id} />
                   <ConfirmSubmit message={`Delete application ${a.no}? This cannot be undone.`} className="btn btn-danger">Delete application</ConfirmSubmit>
                 </ActionFormRedirect>

@@ -28,11 +28,15 @@ function Chevron({ back }: { back: boolean }) {
   );
 }
 
-/** `base` is the list's address — /admin/products — and each card lives at base/id. */
-export function RecordNav({ base, around }: { base: string; around: Neighbours }) {
+/**
+ * `base` is the list's address — /admin/products — and each card lives at base/id. `query` is the
+ * list's filter (status=OPEN&q=…), carried from card to card so the arrows stay inside that list.
+ */
+export function RecordNav({ base, around, query }: { base: string; around: Neighbours; query?: string }) {
+  const to = (id: number) => `${base}/${id}${query ? `?${query}` : ''}`;
   const router = useRouter();
-  const previous = around.previous ? `${base}/${around.previous.id}` : null;
-  const next = around.next ? `${base}/${around.next.id}` : null;
+  const previous = around.previous ? to(around.previous.id) : null;
+  const next = around.next ? to(around.next.id) : null;
 
   useEffect(() => {
     const mark = (event: Event) => {
@@ -65,7 +69,7 @@ export function RecordNav({ base, around }: { base: string; around: Neighbours }
     const className = `record-step ${back ? 'record-prev' : 'record-next'}`;
     return neighbour ? (
       <Link
-        href={`${base}/${neighbour.id}`}
+        href={to(neighbour.id)}
         className={className}
         rel={back ? 'prev' : 'next'}
         title={`${label} (${keysHint}) — ${neighbour.name}`}

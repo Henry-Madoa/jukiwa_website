@@ -19,9 +19,10 @@ import { AppError } from './errors.ts';
 import * as v from './validate.ts';
 import { quote } from './loan-math.ts';
 import { toTerms } from './site.ts';
+import { locate } from './neighbours.ts';
 import {
-  APPLICATION_STATUSES, APPLICANT_TYPES, COLLATERALS, ENQUIRY_STATUSES, OPEN_APPLICATION_STATUSES, OPEN_ENQUIRY_STATUSES,
-  type ApplicationStatus, type ApplicationView, type EnquiryKind, type EnquiryStatus, type EnquiryView, type Product, type Subscriber,
+  APPLICATION_STATUSES, APPLICANT_TYPES, COLLATERALS, ENQUIRY_KINDS, ENQUIRY_STATUSES, OPEN_APPLICATION_STATUSES, OPEN_ENQUIRY_STATUSES,
+  type ApplicationStatus, type ApplicationView, type EnquiryKind, type EnquiryStatus, type EnquiryView, type Neighbours, type Product, type Subscriber,
 } from './types.ts';
 
 /** Nobody is signed in when the website writes, so the trail records the form, not a person. */
@@ -54,16 +55,39 @@ const APPLICATION_SELECT = `
   LEFT JOIN web_product p ON p.id = a.product_id
   LEFT JOIN web_branch b ON b.id = a.branch_id`;
 
-export const listApplications = (status?: ApplicationStatus | 'OPEN' | '' | null, search = '', productId?: number | null): Promise<ApplicationView[]> =>
+/**
+ * `includeId` keeps one record in the list whatever the filter says — the card being looked at, so
+ * that Previous and Next still know where it sits after its status has moved it out of the filter.
+ */
+export const listApplications = (status?: ApplicationStatus | 'OPEN' | '' | null, search = '', productId?: number | null, includeId?: number | null): Promise<ApplicationView[]> =>
   all<ApplicationView>(
     `${APPLICATION_SELECT}
-     WHERE (a.no ILIKE @like OR a.first_name ILIKE @like OR a.last_name ILIKE @like OR COALESCE(a.company_name,'') ILIKE @like
-            OR a.phone ILIKE @like OR COALESCE(a.email,'') ILIKE @like OR COALESCE(a.county,'') ILIKE @like)
-       ${status === 'OPEN' ? 'AND a.status = ANY(@open)' : status ? 'AND a.status = @status' : ''}
-       ${productId ? 'AND a.product_id = @product' : ''}
-     ORDER BY (a.status = 'RECEIVED') DESC, a.created_at DESC LIMIT 500`,
-    { like: `%${search.trim()}%`, status: status || null, open: OPEN_APPLICATION_STATUSES, product: productId ?? null },
+     WHERE ((a.no ILIKE @like OR a.first_name ILIKE @like OR a.last_name ILIKE @like OR COALESCE(a.company_name,'') ILIKE @like
+             OR a.phone ILIKE @like OR COALESCE(a.email,'') ILIKE @like OR COALESCE(a.county,'') ILIKE @like)
+        ${status === 'OPEN' ? 'AND a.status = ANY(@open)' : status ? 'AND a.status = @status' : ''}
+        ${productId ? 'AND a.product_id = @product' : ''})
+        ${includeId ? 'OR a.id = @include' : ''}
+     ORDER BY (a.status = 'RECEIVED') DESC, a.created_at DESC, a.id DESC LIMIT 500`,
+    { like: `%${search.trim()}%`, status: status || null, open: OPEN_APPLICATION_STATUSES, product: productId ?? null, include: includeId ?? null },
   );
+
+export interface ApplicationFilter { status: ApplicationStatus | 'OPEN' | ''; q: string; productId: number | null; query: string }
+
+/** The list screen's filter, read from its address — shared with the card, so both see one list. */
+export function readApplicationFilter(params: { status?: string; q?: string; product?: string }): ApplicationFilter {
+  const raw = params.status ?? 'OPEN';
+  const status = (raw === 'ALL' ? '' : raw === 'OPEN' || APPLICATION_STATUSES.some((s) => s.value === raw) ? raw : 'OPEN') as ApplicationFilter['status'];
+  const q = params.q ?? '';
+  const productId = Number(params.product) || null;
+  const query = new URLSearchParams({ status: status || 'ALL', ...(q ? { q } : {}), ...(productId ? { product: String(productId) } : {}) }).toString();
+  return { status, q, productId, query };
+}
+
+/** Previous and Next for an application card, within the list it was opened from. */
+export async function applicationNeighbours(id: number, filter: ApplicationFilter): Promise<Neighbours> {
+  const rows = await listApplications(filter.status, filter.q, filter.productId, id);
+  return locate(rows.map((a) => ({ id: a.id, name: `${a.no} · ${a.company_name ?? `${a.first_name} ${a.last_name}`}` })), id);
+}
 
 export const getApplication = (id: number): Promise<ApplicationView | undefined> =>
   one<ApplicationView>(`${APPLICATION_SELECT} WHERE a.id = ?`, id);
@@ -171,16 +195,36 @@ const ENQUIRY_SELECT = `
   LEFT JOIN web_product p ON p.id = e.product_id
   LEFT JOIN web_branch b ON b.id = e.branch_id`;
 
-export const listEnquiries = (status?: EnquiryStatus | 'OPEN' | '' | null, search = '', kind?: EnquiryKind | '' | null): Promise<EnquiryView[]> =>
+/** `includeId` works as it does for applications: the open card always keeps its place. */
+export const listEnquiries = (status?: EnquiryStatus | 'OPEN' | '' | null, search = '', kind?: EnquiryKind | '' | null, includeId?: number | null): Promise<EnquiryView[]> =>
   all<EnquiryView>(
     `${ENQUIRY_SELECT}
-     WHERE (e.name ILIKE @like OR e.phone ILIKE @like OR COALESCE(e.email,'') ILIKE @like OR COALESCE(e.message,'') ILIKE @like
-            OR COALESCE(e.location,'') ILIKE @like)
-       ${status === 'OPEN' ? 'AND e.status = ANY(@open)' : status ? 'AND e.status = @status' : ''}
-       ${kind ? 'AND e.kind = @kind' : ''}
-     ORDER BY (e.status = 'NEW') DESC, e.created_at DESC LIMIT 500`,
-    { like: `%${search.trim()}%`, status: status || null, open: OPEN_ENQUIRY_STATUSES, kind: kind || null },
+     WHERE ((e.name ILIKE @like OR e.phone ILIKE @like OR COALESCE(e.email,'') ILIKE @like OR COALESCE(e.message,'') ILIKE @like
+             OR COALESCE(e.location,'') ILIKE @like)
+        ${status === 'OPEN' ? 'AND e.status = ANY(@open)' : status ? 'AND e.status = @status' : ''}
+        ${kind ? 'AND e.kind = @kind' : ''})
+        ${includeId ? 'OR e.id = @include' : ''}
+     ORDER BY (e.status = 'NEW') DESC, e.created_at DESC, e.id DESC LIMIT 500`,
+    { like: `%${search.trim()}%`, status: status || null, open: OPEN_ENQUIRY_STATUSES, kind: kind || null, include: includeId ?? null },
   );
+
+export interface EnquiryFilter { status: EnquiryStatus | 'OPEN' | ''; kind: EnquiryKind | ''; q: string; query: string }
+
+/** The enquiry list's filter, read from its address — shared with the card. */
+export function readEnquiryFilter(params: { status?: string; kind?: string; q?: string }): EnquiryFilter {
+  const raw = params.status ?? 'OPEN';
+  const status = (raw === 'ALL' ? '' : raw === 'OPEN' || ENQUIRY_STATUSES.some((s) => s.value === raw) ? raw : 'OPEN') as EnquiryFilter['status'];
+  const kind = (ENQUIRY_KINDS.some((k) => k.value === params.kind) ? params.kind : '') as EnquiryFilter['kind'];
+  const q = params.q ?? '';
+  const query = new URLSearchParams({ status: status || 'ALL', ...(kind ? { kind } : {}), ...(q ? { q } : {}) }).toString();
+  return { status, kind, q, query };
+}
+
+/** Previous and Next for an enquiry card, within the list it was opened from. */
+export async function enquiryNeighbours(id: number, filter: EnquiryFilter): Promise<Neighbours> {
+  const rows = await listEnquiries(filter.status, filter.q, filter.kind, id);
+  return locate(rows.map((e) => ({ id: e.id, name: e.name })), id);
+}
 
 export const getEnquiry = (id: number): Promise<EnquiryView | undefined> =>
   one<EnquiryView>(`${ENQUIRY_SELECT} WHERE e.id = ?`, id);

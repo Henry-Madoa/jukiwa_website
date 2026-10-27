@@ -2,18 +2,24 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requirePage } from '@/lib/auth.ts';
 import { canAction } from '@/lib/permissions.ts';
-import { getEnquiry } from '@/lib/inbox.ts';
+import { enquiryNeighbours, getEnquiry, readEnquiryFilter } from '@/lib/inbox.ts';
 import { formatDateTime, telHref, whatsappHref } from '@/lib/format.ts';
 import { ENQUIRY_KINDS, ENQUIRY_STATUSES } from '@/lib/types.ts';
 import { setEnquiryStatus, deleteEnquiry } from '@/app/actions/content.ts';
 import { ActionForm, ActionFormRedirect, ConfirmSubmit, Submit } from '../../ui.tsx';
+import { RecordNav } from '../../record-nav.tsx';
 
 export const metadata = { title: 'Enquiry' };
 
-export default async function EnquiryCardPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EnquiryCardPage({ params, searchParams }: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ status?: string; kind?: string; q?: string }>;
+}) {
   const { id } = await params;
   const user = await requirePage('ENQUIRIES');
-  const e = await getEnquiry(Number(id));
+  // The filter of the list this card was opened from: Previous and Next stay inside that list.
+  const filter = readEnquiryFilter(await searchParams);
+  const [e, around] = await Promise.all([getEnquiry(Number(id)), enquiryNeighbours(Number(id), filter)]);
   if (!e) notFound();
 
   const kind = ENQUIRY_KINDS.find((k) => k.value === e.kind)?.label ?? e.kind;
@@ -22,7 +28,8 @@ export default async function EnquiryCardPage({ params }: { params: Promise<{ id
   return (
     <>
       <div className="crumb">
-        <Link href="/admin/enquiries">Enquiries & callbacks</Link><span aria-hidden="true">›</span>{e.name}
+        <Link href={`/admin/enquiries?${filter.query}`}>Enquiries & callbacks</Link><span aria-hidden="true">›</span>{e.name}
+        <RecordNav base="/admin/enquiries" around={around} query={filter.query} />
       </div>
 
       <div className="grid-side">
@@ -83,7 +90,7 @@ export default async function EnquiryCardPage({ params }: { params: Promise<{ id
               <header><h2>Delete</h2></header>
               <div className="body">
                 <p className="help" style={{ margin: 0 }}>For spam. A genuine enquiry should be Closed, so it still counts.</p>
-                <ActionFormRedirect action={deleteEnquiry} to="/admin/enquiries">
+                <ActionFormRedirect action={deleteEnquiry} to={`/admin/enquiries?${filter.query}`}>
                   <input type="hidden" name="id" value={e.id} />
                   <ConfirmSubmit message="Delete this enquiry?" className="btn btn-danger">Delete</ConfirmSubmit>
                 </ActionFormRedirect>

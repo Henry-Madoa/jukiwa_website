@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { requirePage } from '@/lib/auth.ts';
-import { listEnquiries } from '@/lib/inbox.ts';
+import { listEnquiries, readEnquiryFilter } from '@/lib/inbox.ts';
 import { formatDateShort, relativeDays, truncate } from '@/lib/format.ts';
-import { ENQUIRY_KINDS, ENQUIRY_STATUSES, type EnquiryKind, type EnquiryStatus } from '@/lib/types.ts';
+import { ENQUIRY_KINDS, ENQUIRY_STATUSES } from '@/lib/types.ts';
 
 export const metadata = { title: 'Enquiries & callbacks' };
 
@@ -14,9 +14,10 @@ export const metadata = { title: 'Enquiries & callbacks' };
  */
 export default async function EnquiriesPage({ searchParams }: { searchParams: Promise<{ status?: string; kind?: string; q?: string }> }) {
   await requirePage('ENQUIRIES');
-  const { status = 'OPEN', kind = '', q = '' } = await searchParams;
-  const statusFilter = (status === 'ALL' ? '' : status === 'OPEN' || ENQUIRY_STATUSES.some((s) => s.value === status) ? status : 'OPEN') as EnquiryStatus | 'OPEN' | '';
-  const kindFilter = (ENQUIRY_KINDS.some((k) => k.value === kind) ? kind : '') as EnquiryKind | '';
+  const params = await searchParams;
+  const { status = 'OPEN', kind = '' } = params;
+  // Read once, shared with the card: Previous and Next there step through this same filtered list.
+  const { status: statusFilter, kind: kindFilter, q, query } = readEnquiryFilter(params);
   const [enquiries, all] = await Promise.all([listEnquiries(statusFilter, q, kindFilter), listEnquiries('', '', kindFilter)]);
 
   const n = (value: string) => all.filter((e) => e.status === value).length;
@@ -74,7 +75,7 @@ export default async function EnquiriesPage({ searchParams }: { searchParams: Pr
                 return (
                   <tr key={e.id}>
                     <td>
-                      <Link href={`/admin/enquiries/${e.id}`} className="row-link">{e.name}</Link>
+                      <Link href={`/admin/enquiries/${e.id}?${query}`} className="row-link">{e.name}</Link>
                       <span className="sub">{e.phone}{e.email ? ` · ${e.email}` : ''}</span>
                     </td>
                     <td>
