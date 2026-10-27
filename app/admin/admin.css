@@ -1024,19 +1024,46 @@ a.tile-stat:hover { border-color: var(--brand); transform: translateY(-2px); box
 
 /* ================================================ Previous and Next on a card (record-nav.tsx) */
 
-/* Business Central's pair: two small square arrow buttons, top right of the card, greyed at the ends. */
-.record-nav { display: inline-flex; align-items: center; gap: 2px; flex: 0 0 auto; }
+/*
+ * Business Central's pair: large round slate buttons with a white chevron, fixed halfway down the
+ * screen on the card's left and right edges. The card's gutters widen so each circle sits in its
+ * gutter, touching the card's edge, without covering a field.
+ */
+.admin-body:has(.record-nav) { padding-inline: 60px; }
+.record-nav { display: contents; }
 .record-step {
-  width: 32px;
-  height: 32px;
-  display: inline-grid;
+  position: fixed;
+  top: 50%;
+  z-index: 30;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  display: grid;
   place-items: center;
-  border-radius: 6px;
-  color: var(--ink);
+  border-radius: 50%;
+  background: #4b5563;
+  color: #fff;
   text-decoration: none;
-  transition: background 0.15s, color 0.15s;
+  box-shadow: 0 6px 16px rgb(15 23 42 / 0.28);
+  transition: background 0.15s, transform 0.15s;
 }
-.record-step:hover { background: var(--surface-sunk, rgb(0 0 0 / 0.06)); color: var(--brand); }
-.record-step:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
-.record-step[aria-disabled='true'] { color: var(--muted); opacity: 0.45; cursor: default; }
-.record-step[aria-disabled='true']:hover { background: none; color: var(--muted); }
+/* White chevrons wherever the pair sits — the breadcrumb's own link colours must not reach them. */
+.record-nav .record-step, .record-nav .record-step:hover { color: #fff; text-decoration: none; }
+.record-prev { left: calc(var(--sidebar) + 6px); }
+.record-next { right: 6px; }
+.record-step:hover { background: #374151; transform: scale(1.05); }
+.record-step:focus-visible { outline: 3px solid var(--accent, #d4a94a); outline-offset: 2px; }
+.record-step[aria-disabled='true'] { background: #9ca3af; opacity: 0.45; box-shadow: none; cursor: default; }
+.record-step[aria-disabled='true']:hover { background: #9ca3af; transform: none; }
+
+/* The sidebar folds away below 900px, so the left button moves to the window's edge. */
+@media (max-width: 900px) {
+  .record-prev { left: 6px; }
+}
+/* On a phone the middle of the edge is where the fields are: the pair drops to the bottom corners. */
+@media (max-width: 680px) {
+  .admin-body:has(.record-nav) { padding-inline: 16px; padding-bottom: 80px; }
+  .record-step { top: auto; bottom: 16px; margin-top: 0; width: 44px; height: 44px; }
+  .record-prev { left: 16px; }
+  .record-next { right: 16px; }
+}

@@ -6,10 +6,10 @@ import { useEffect } from 'react';
 import type { Neighbours } from '@/lib/types.ts';
 
 /*
- * Previous and Next on a card, as Business Central has them: two small arrow buttons at the top
- * right of the card, pointing up and down because they move through the list the card was opened
- * from — up to the record above, down to the one below — and the same keys BC uses, Ctrl+Up arrow
- * and Ctrl+Down arrow. At either end the button greys out rather than disappearing.
+ * Previous and Next on a card, as Business Central has them: two large round buttons with a chevron,
+ * floating halfway down the screen on the card's left and right edges and staying put while the
+ * card scrolls — with BC's keys, Ctrl+Up arrow and Ctrl+Down arrow. At either end the button greys
+ * out rather than disappearing. On a phone they move to the bottom corners, clear of the fields.
  *
  * One difference from BC, on purpose: BC saves as you type, these cards save on Save. So any typing
  * in a form marks it unsaved, saving clears the mark, and stepping away while one is unsaved asks
@@ -20,10 +20,10 @@ const unsavedOk = (): boolean =>
   !document.querySelector('form[data-dirty="true"]') ||
   window.confirm('This card has changes that are not saved. Leave without saving them?');
 
-function Arrow({ up }: { up: boolean }) {
+function Chevron({ back }: { back: boolean }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-      {up ? <path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" /> : <path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" />}
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      {back ? <path d="M14.5 5.5 8 12l6.5 6.5" /> : <path d="M9.5 5.5 16 12l-6.5 6.5" />}
     </svg>
   );
 }
@@ -59,23 +59,24 @@ export function RecordNav({ base, around }: { base: string; around: Neighbours }
     };
   }, [router, previous, next]);
 
-  const step = (neighbour: Neighbours['previous'], up: boolean) => {
-    const label = up ? 'Previous' : 'Next';
-    const keysHint = up ? 'Ctrl+Up arrow' : 'Ctrl+Down arrow';
+  const step = (neighbour: Neighbours['previous'], back: boolean) => {
+    const label = back ? 'Previous' : 'Next';
+    const keysHint = back ? 'Ctrl+Up arrow' : 'Ctrl+Down arrow';
+    const className = `record-step ${back ? 'record-prev' : 'record-next'}`;
     return neighbour ? (
       <Link
         href={`${base}/${neighbour.id}`}
-        className="record-step"
-        rel={up ? 'prev' : 'next'}
+        className={className}
+        rel={back ? 'prev' : 'next'}
         title={`${label} (${keysHint}) — ${neighbour.name}`}
         aria-label={`${label}: ${neighbour.name}`}
         onClick={(event) => { if (!unsavedOk()) event.preventDefault(); }}
       >
-        <Arrow up={up} />
+        <Chevron back={back} />
       </Link>
     ) : (
-      <span className="record-step" aria-disabled="true" title={`${label} (${keysHint})`}>
-        <Arrow up={up} />
+      <span className={className} aria-disabled="true" title={`${label} (${keysHint})`}>
+        <Chevron back={back} />
       </span>
     );
   };
