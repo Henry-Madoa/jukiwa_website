@@ -21,16 +21,17 @@ export const COMPANY_VALUES: [icon: 'users' | 'trend' | 'shield' | 'spark' | 'ho
   ['home', 'Community', 'A commitment to the places we work, from Kilimani to Kitengela to Nakuru — and to Kenyans building at home from abroad.'],
 ];
 
+// The built-in hero photographs live on Cloudinary like every other image; nothing is served from the repo.
 const DEFAULT_HERO_PHOTOS = [
-  '/hero/rent-advance.webp',
-  '/hero/building-advance.webp',
-  '/hero/property-purchase.webp',
-  '/hero/biashara-loan.webp',
+  'https://res.cloudinary.com/not5pvxb/image/upload/v1794243978/jukiwa_website/hero/rent-advance.webp',
+  'https://res.cloudinary.com/not5pvxb/image/upload/v1794243979/jukiwa_website/hero/building-advance.webp',
+  'https://res.cloudinary.com/not5pvxb/image/upload/v1794243980/jukiwa_website/hero/property-purchase.webp',
+  'https://res.cloudinary.com/not5pvxb/image/upload/v1794243981/jukiwa_website/hero/biashara-loan.webp',
 ];
 
 export async function HeroBackdrop() {
   const photos = await getHeroImages();
-  const urls = [...new Set([...DEFAULT_HERO_PHOTOS, ...photos.map((url) => cdn(url, { width: 2400 }))])];
+  const urls = [...new Set([...DEFAULT_HERO_PHOTOS.map((url) => cdn(url)), ...photos.map((url) => cdn(url, { width: 2400 }))])];
   return (
     <div className="hero-bg" aria-hidden="true">
       <HeroPhoto key={JSON.stringify(urls)} urls={urls} />

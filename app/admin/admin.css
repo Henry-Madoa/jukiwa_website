@@ -676,7 +676,7 @@ a.tile-stat:hover { border-color: var(--brand); transform: translateY(-2px); box
   padding: clamp(16px, 3svh, 40px) clamp(16px, 4vw, 48px);
   background:
     linear-gradient(145deg, color-mix(in srgb, var(--brand-deep) 72%, transparent), color-mix(in srgb, var(--brand-deep) 40%, transparent)),
-    url('/admin/login-office.webp') center / cover no-repeat,
+    url('https://res.cloudinary.com/not5pvxb/image/upload/f_auto,q_auto/v1794243982/jukiwa_website/admin/login-office.webp') center / cover no-repeat,
     var(--brand-deep);
 }
 
