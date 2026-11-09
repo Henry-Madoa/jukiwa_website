@@ -21,18 +21,20 @@ export const COMPANY_VALUES: [icon: 'users' | 'trend' | 'shield' | 'spark' | 'ho
   ['home', 'Community', 'A commitment to the places we work, from Kilimani to Kitengela to Nakuru — and to Kenyans building at home from abroad.'],
 ];
 
-/*
- * The home hero's backdrop — a green and a gold glow drifting over a fine grid, under a picture from
- * the hero background library — shared by every page hero, so the whole site opens the same way.
- * With no picture switched on, the green backdrop simply shows on its own.
- */
+const DEFAULT_HERO_PHOTOS = [
+  '/hero/rent-advance.webp',
+  '/hero/building-advance.webp',
+  '/hero/property-purchase.webp',
+  '/hero/biashara-loan.webp',
+];
+
 export async function HeroBackdrop() {
   const photos = await getHeroImages();
+  const urls = [...new Set([...DEFAULT_HERO_PHOTOS, ...photos.map((url) => cdn(url, { width: 2400 }))])];
   return (
     <div className="hero-bg" aria-hidden="true">
-      <HeroPhoto urls={photos.map((url) => cdn(url, { width: 2400 }))} />
+      <HeroPhoto key={JSON.stringify(urls)} urls={urls} />
       <span className="hero-shade" />
-      <span className="orb orb-1" /><span className="orb orb-2" /><span className="grid" />
     </div>
   );
 }

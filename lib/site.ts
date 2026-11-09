@@ -35,8 +35,7 @@ export const getSettings = cache(async (): Promise<Settings> => {
 });
 
 /**
- * The hero background pictures that are switched on, in the library's order. Each page hero picks
- * one of them at random in the browser (see app/(site)/hero-photo.tsx).
+ * The active library photos, in the order they join the page hero rotation.
  */
 export const getHeroImages = cache(async (): Promise<string[]> =>
   (await all<{ image_url: string }>('SELECT image_url FROM web_hero_image WHERE is_active ORDER BY sort, id')).map((row) => row.image_url));

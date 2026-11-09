@@ -21,52 +21,21 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const destination = next && /^\/admin(\/|$)/.test(next) && !next.startsWith('//') ? next : '/admin';
   const short = company.short_name ?? company.name;
 
-  const brand = (className: string) => (
-    <Link href="/" className={className}>
-      <Wordmark name={short} sub="Website administration" logoUrl={company.logo_url} size={46} />
-    </Link>
-  );
-
   return (
-    <div className="admin login-page">
-      <aside className="login-aside">
-        {brand('login-brand')}
+    <main className="admin login-page">
+      <div className="login-card">
+        <Link href="/" className="login-brand">
+          <Wordmark name={short} sub="Website administration" logoUrl={company.logo_url} size={46} />
+        </Link>
 
-        <div className="login-aside-body">
-          <span className="login-kicker">Staff area</span>
-          <h2>Welcome back to {short}</h2>
-          {company.tagline ? <p className="login-motto">&ldquo;{company.tagline}&rdquo;</p> : null}
-          <p>
-            Work the applications and callbacks the website brings in, keep every product&rsquo;s terms current, and
-            publish what borrowers need to know — from one place.
-          </p>
-          <ul>
-            <li>New applications arrive here the moment a customer presses Submit</li>
-            <li>Change a product&rsquo;s rate and every calculator on the site follows</li>
-            <li>Permission Sets decide which screens each person may open</li>
-            <li>Every change is recorded with the name of the person who made it</li>
-          </ul>
+        <div className="login-head">
+          <h1>Staff sign in</h1>
+          <p>Use your staff account to access the website dashboard.</p>
         </div>
 
-        <p className="login-aside-foot">
-          © {new Date().getFullYear()} {company.name}
-        </p>
-      </aside>
-
-      <main className="login-main">
-        <div className="login-card">
-          {brand('login-brand login-brand-mobile')}
-
-          <div className="login-head">
-            <h1>Sign in</h1>
-            <p>For Jukiwa staff who run the website. Customers do not need an account to apply.</p>
-          </div>
-
-          <LoginForm next={destination} />
-        </div>
-
+        <LoginForm next={destination} />
         <Link href="/" className="login-back">← Back to the website</Link>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

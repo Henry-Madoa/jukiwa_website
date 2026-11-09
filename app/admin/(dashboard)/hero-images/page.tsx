@@ -28,9 +28,8 @@ export default async function HeroImagesPage() {
           <div>
             <h2>Hero backgrounds</h2>
             <p>
-              {images.length} {images.length === 1 ? 'picture' : 'pictures'} · {active} switched on. Every page banner — the home
-              page, Diaspora, Calculator, Insights and the rest — shows one of the switched-on pictures, chosen at random each
-              time the page opens.
+              {images.length} {images.length === 1 ? 'picture' : 'pictures'} · {active} switched on.
+              Page banners rotate through the built-in product photos and the pictures switched on here.
             </p>
           </div>
         </header>
@@ -65,7 +64,7 @@ export default async function HeroImagesPage() {
           <div className="empty">
             <span className="big" aria-hidden="true">🖼</span>
             <h3>No pictures yet</h3>
-            <p>Until there are, page banners show the plain green background — or the picture set under Company profile, if there is one.</p>
+            <p>Page banners rotate through the built-in product photos until you add pictures to this library.</p>
           </div>
         </div>
       ) : (

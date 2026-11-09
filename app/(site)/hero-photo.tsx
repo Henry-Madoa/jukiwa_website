@@ -1,25 +1,48 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
-/*
- * The picture behind a page banner, chosen at random from the hero background library.
- *
- * The pages are prerendered, so a choice made on the server would be frozen into the HTML until
- * the next change in the admin. The choice is made here instead, in the visitor's browser, on
- * every visit. Until it loads the banner shows its green backdrop, and the picture fades in over
- * it — the server and the browser render the same empty <img>, so there is nothing to mismatch.
- */
 export function HeroPhoto({ urls }: { urls: string[] }) {
-  const ref = useRef<HTMLImageElement>(null);
+  const [slide, setSlide] = useState({ current: urls[0], previous: undefined as string | undefined });
 
   useEffect(() => {
-    const img = ref.current;
-    if (!img || !urls.length) return;
-    img.addEventListener('load', () => { img.dataset.loaded = 'true'; }, { once: true });
-    img.src = urls[Math.floor(Math.random() * urls.length)]!;
+    if (urls.length < 2) return;
+
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let index = 0;
+    let pending = false;
+    let stopped = false;
+
+    const timer = window.setInterval(async () => {
+      if (motion.matches || document.hidden || pending) return;
+
+      index = (index + 1) % urls.length;
+      const next = urls[index]!;
+      const image = new Image();
+      pending = true;
+      image.src = next;
+      try {
+        await image.decode();
+        if (!stopped && !motion.matches && !document.hidden) {
+          setSlide(({ current }) => current === next ? { current, previous: undefined } : { current: next, previous: current });
+        }
+      } catch {
+        // Keep the current photo if the next one fails to load.
+      } finally {
+        pending = false;
+      }
+    }, 6500);
+
+    return () => {
+      stopped = true;
+      window.clearInterval(timer);
+    };
   }, [urls]);
 
-  if (!urls.length) return null;
-  return <img ref={ref} className="hero-photo" alt="" decoding="async" />;
+  return (
+    <>
+      {slide.previous && <img key={slide.previous} className="hero-photo" src={slide.previous} alt="" />}
+      {slide.current && <img key={slide.current} className="hero-photo hero-photo-current" src={slide.current} alt="" />}
+    </>
+  );
 }

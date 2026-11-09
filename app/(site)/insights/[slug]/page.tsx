@@ -7,7 +7,7 @@ import { cdn } from '@/lib/cloudinary.ts';
 import { formatDate } from '@/lib/format.ts';
 import { siteUrl } from '@/lib/urls.ts';
 import { POST_CATEGORIES } from '@/lib/types.ts';
-import { CtaBand, PostCard } from '../../blocks.tsx';
+import { CtaBand, HeroBackdrop, PostCard } from '../../blocks.tsx';
 import { Icon } from '../../icons.tsx';
 import { JsonLd, Prose } from '../../prose.tsx';
 
@@ -48,9 +48,10 @@ export default async function ArticlePage({ params }: PageProps<'/insights/[slug
         }}
       />
       <article>
-        <header className="article-hero">
+        <header className="page-hero page-hero-compact article-hero">
+          <HeroBackdrop />
           <div className="wrap wrap-narrow">
-            <nav className="crumbs" aria-label="Breadcrumb" style={{ color: 'var(--muted)' }}>
+            <nav className="crumbs" aria-label="Breadcrumb">
               <Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/insights">Insights</Link>
             </nav>
             <div className="post-meta" style={{ marginTop: 24 }}>
@@ -61,12 +62,12 @@ export default async function ArticlePage({ params }: PageProps<'/insights/[slug
             <h1 className="display-2" style={{ marginTop: 18 }}>{post.title}</h1>
             {post.excerpt ? <p className="lead" style={{ marginTop: 18 }}>{post.excerpt}</p> : null}
           </div>
-          {post.image_url ? (
-            <div className="wrap">
-              <div className="article-cover"><img src={cdn(post.image_url, { width: 1600, height: 686 })} alt="" /></div>
-            </div>
-          ) : null}
         </header>
+        {post.image_url ? (
+          <div className="wrap">
+            <div className="article-cover"><img src={cdn(post.image_url, { width: 1600, height: 686 })} alt="" /></div>
+          </div>
+        ) : null}
         <div className="section-tight">
           <div className="wrap wrap-narrow">
             <Prose text={post.body} />

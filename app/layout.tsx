@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
-import { Bricolage_Grotesque, Plus_Jakarta_Sans } from 'next/font/google';
 import { getSettings } from '@/lib/site.ts';
 import { siteUrl } from '@/lib/urls.ts';
+import './fonts/fonts.css';
 import './globals.css';
 
 /*
@@ -9,21 +9,6 @@ import './globals.css';
  * defaults, and nothing else. The public website and the admin each bring their own chrome,
  * because they are addressed to different people — a prospective borrower, and a member of staff.
  */
-
-const sans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-sans-stack',
-  display: 'swap',
-  fallback: ['ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
-});
-
-/* A contemporary grotesque with real character at display sizes — confident, not corporate. */
-const display = Bricolage_Grotesque({
-  subsets: ['latin'],
-  variable: '--font-display-stack',
-  display: 'swap',
-  fallback: ['ui-sans-serif', 'system-ui', 'Segoe UI', 'Arial', 'sans-serif'],
-});
 
 export const viewport: Viewport = {
   themeColor: '#0b2a18',
@@ -62,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable}`}>
+    <html lang="en">
       <body>{children}</body>
     </html>
   );

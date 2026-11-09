@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { getBranches, getProducts, getSettings } from '@/lib/site.ts';
 import { telHref, whatsappHref } from '@/lib/format.ts';
 import { BRAND_SLOGAN, Wordmark } from '@/app/brand.tsx';
-import { SiteHeader, StaffLink, type MenuGroup } from './site-nav.tsx';
+import { SiteHeader, type MenuGroup } from './site-nav.tsx';
 import { NewsletterForm } from './forms.tsx';
 import { Icon } from './icons.tsx';
 import { JsonLd } from './prose.tsx';
@@ -112,7 +112,6 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
           {company.diaspora_phone ? <a href={telHref(company.diaspora_phone)} className="hide-sm hide-md"><Icon name="globe" size={14} /> Diaspora {company.diaspora_phone}</a> : null}
           <span className="spacer" />
           {company.office_hours ? <span className="hours hide-sm"><Icon name="clock" size={14} /> {company.office_hours}</span> : null}
-          <StaffLink />
         </div>
       </div>
 
@@ -203,7 +202,6 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
             <nav aria-label="Legal">
               <Link href="/privacy">Privacy</Link>
               <Link href="/terms">Terms</Link>
-              <Link href="/admin/login">Staff portal</Link>
             </nav>
           </div>
         </div>

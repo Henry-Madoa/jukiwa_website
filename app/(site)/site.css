@@ -11,6 +11,8 @@
 
 .site {
   --header-h: 76px;
+  --topbar-h: 38px;
+  --masthead-h: calc(var(--header-h) + var(--topbar-h) + 2px);
   background: var(--surface);
   color: var(--ink);
   overflow-x: clip;
@@ -135,29 +137,15 @@
   color: rgb(255 255 255 / 0.76);
   font-size: 0.8rem;
 }
-.topbar .wrap { display: flex; align-items: center; gap: 22px; min-height: 38px; }
+.topbar .wrap { display: flex; align-items: center; gap: 22px; min-height: var(--topbar-h); }
 .topbar a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
 .topbar .show-sm { display: none; }
-.topbar .staff-link {
-  flex: 0 0 auto;
-  padding: 3px 11px;
-  border-radius: 999px;
-  border: 1px solid rgb(255 255 255 / 0.22);
-  color: #fff;
-  font-weight: 600;
-}
-.topbar .staff-link:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .topbar .hours { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
 .topbar a:hover { color: #fff; }
 .topbar .spacer { flex: 1; }
 .topbar .parent { color: var(--accent); font-weight: 600; }
 .topbar .roof { width: 14px; height: 10px; flex: 0 0 auto; }
 
-/*
- * No white bar: the menu sits on the same deep green as the top bar and the hero, so the three
- * read as one block and the links are white on green. Once the page scrolls it lifts off the
- * content with a shadow, solid, so nothing passing underneath muddies the links.
- */
 .header {
   position: sticky;
   top: 0;
@@ -171,6 +159,11 @@
 .header[data-scrolled='true'] {
   border-bottom-color: rgb(255 255 255 / 0.08);
   box-shadow: 0 10px 30px rgb(0 0 0 / 0.22);
+}
+/* At the top of hero pages, both bars sit over the same background as the hero. */
+.site:has(#main > :is(.hero, .page-hero), #main > article > .article-hero) {
+  .topbar { position: relative; z-index: 1; background: transparent; }
+  .header:not([data-scrolled='true']) { background: transparent; border-color: transparent; }
 }
 .header .wrap { display: flex; align-items: center; gap: 20px; height: var(--header-h); }
 .header .brand { color: #fff; text-decoration: none; flex: 0 0 auto; border-radius: 12px; }
@@ -279,46 +272,36 @@
 
 /* ========================================================================== hero */
 
-.hero {
+.hero, .page-hero {
+  --hero-space: clamp(18px, 4svh, 56px);
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  margin-block-start: calc(-1 * var(--masthead-h));
+  padding-block: calc(var(--masthead-h) + var(--hero-space)) var(--hero-space);
   background: var(--brand-deep);
   color: #fff;
-  padding-block: clamp(48px, 7vw, 96px) clamp(120px, 12vw, 160px);
+}
+.hero, .page-hero:not(.page-hero-compact) {
+  min-block-size: 100dvh;
+  display: grid;
+  align-items: center;
 }
 .hero-bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
-.hero-bg .orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.45; }
-.hero-bg .orb-1 { width: 620px; height: 620px; right: -140px; top: -220px; background: var(--brand); animation: drift 18s ease-in-out infinite alternate; }
-.hero-bg .orb-2 { width: 420px; height: 420px; left: -160px; bottom: -200px; background: color-mix(in srgb, var(--accent) 70%, var(--brand)); opacity: 0.35; animation: drift 22s ease-in-out infinite alternate-reverse; }
-.hero-bg .grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 0.05) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 75%);
+.hero-bg .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-bg .hero-photo-current { animation: hero-photo-in 0.7s ease both; }
 }
-/*
- * The background photograph, under a shade that is darkest behind the headline and lightest behind
- * the calculator — so the words stay readable on any picture the admin uploads.
- */
-.hero-bg .hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; opacity: 0; transition: opacity 0.7s ease; }
-/* The picture is chosen in the browser (see hero-photo.tsx) and fades in over the green once it arrives. */
-.hero-bg .hero-photo[data-loaded='true'] { opacity: 1; }
-@media (prefers-reduced-motion: reduce) { .hero-bg .hero-photo { transition: none; } }
+@keyframes hero-photo-in { from { opacity: 0; } to { opacity: 1; } }
 .hero-bg .hero-shade {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--brand-deep) 94%, transparent) 0%, color-mix(in srgb, var(--brand-deep) 82%, transparent) 45%, color-mix(in srgb, var(--brand-deep) 55%, transparent) 100%),
-    linear-gradient(0deg, var(--brand-deep) 0%, transparent 35%);
+    linear-gradient(180deg, color-mix(in srgb, var(--brand-deep) 65%, transparent), transparent 42%),
+    radial-gradient(ellipse at 85% 0%, color-mix(in srgb, var(--brand) 34%, transparent), transparent 72%),
+    linear-gradient(var(--hero-shade-angle, 160deg), color-mix(in srgb, var(--brand-deep) 86%, transparent), color-mix(in srgb, var(--brand-deep) 76%, transparent) 58%, color-mix(in srgb, var(--brand-deep) 62%, transparent));
 }
-@media (max-width: 960px) {
-  .hero-bg .hero-shade { background: color-mix(in srgb, var(--brand-deep) 86%, transparent); }
-}
-@keyframes drift { to { transform: translate(-60px, 50px) scale(1.08); } }
+.hero { --hero-shade-angle: 205deg; }
 
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
 .hero h1 { color: #fff; margin: 22px 0 22px; }
@@ -366,7 +349,7 @@
 .calc-hero .calc-note { margin-top: 10px; }
 
 /* Stats that overlap the hero's bottom edge. */
-.stats-band { position: relative; z-index: 5; margin-top: -84px; }
+.stats-band { position: relative; z-index: 5; }
 .stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -725,7 +708,6 @@
 .post-card p { color: var(--ink-soft); font-size: 0.93rem; line-height: 1.6; }
 .post-meta { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--muted); }
 
-.article-hero { padding-block: clamp(40px, 6vw, 72px) 0; }
 .article-cover { border-radius: var(--r-2xl); overflow: hidden; aspect-ratio: 21 / 9; margin-top: 36px; background: var(--surface-sunk); }
 .article-cover img { width: 100%; height: 100%; object-fit: cover; }
 .prose { font-size: 1.08rem; line-height: 1.8; color: var(--ink-soft); }
@@ -864,39 +846,14 @@
 
 /* ================================================================= page hero */
 
-.page-hero {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  padding-block: clamp(56px, 8vw, 104px) clamp(56px, 7vw, 88px);
-  /* The backdrop itself is the home hero's: see HeroBackdrop and .hero-bg. */
-  background: var(--brand-deep);
-  color: #fff;
-}
 .page-hero h1 { color: #fff; margin-top: 18px; max-width: 18ch; }
-.page-hero .lead { color: rgb(255 255 255 / 0.78); margin-top: 18px; }
+.page-hero .lead { color: rgb(255 255 255 / 0.78); margin-top: clamp(10px, 2svh, 18px); }
+.article-hero .post-meta { color: rgb(255 255 255 / 0.78); }
+.article-hero h1 { max-width: none; }
 .crumbs { display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.84rem; color: rgb(255 255 255 / 0.6); }
 .crumbs a { color: inherit; text-decoration: none; }
 .crumbs a:hover { color: var(--accent); }
-.page-hero .btn-row { margin-top: 30px; }
-
-/*
- * On a desktop every page banner fills the screen below the menu, as the home page does — a short
- * one (Privacy, Terms) no longer stops halfway down, and a tall one (Diaspora) no longer runs past
- * the bottom: the spacing scales with the height of the window, and the content sits centred. The
- * Apply banner is the exception, being short on purpose so the form can rise into it.
- */
-@media (min-width: 961px) {
-  .page-hero:not(.page-hero-compact) {
-    min-height: calc(100svh - var(--header-h) - 40px);
-    display: flex;
-    align-items: center;
-    padding-block: clamp(20px, 4vh, 64px);
-  }
-  .page-hero:not(.page-hero-compact) > .wrap { width: 100%; }
-  .page-hero:not(.page-hero-compact) .lead { margin-top: clamp(10px, 2vh, 18px); }
-  .page-hero:not(.page-hero-compact) .btn-row { margin-top: clamp(16px, 3vh, 30px); }
-}
+.page-hero .btn-row { margin-top: clamp(14px, 3svh, 30px); }
 
 /* ======================================================================= product page */
 
@@ -1028,7 +985,7 @@
 }
 @keyframes reveal { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal], .marquee-track, .hero-bg .orb, .float-chip, .wa-float::before { animation: none !important; }
+  [data-reveal], .marquee-track, .float-chip, .wa-float::before { animation: none !important; }
 }
 
 /* ================================================================== responsive */
@@ -1081,14 +1038,13 @@
   .quotes { grid-auto-columns: 86%; }
   .header-cta .btn { padding-inline: 16px; }
   .header-cta .btn .hide-sm { display: none; }
-  .stats-band { margin-top: -64px; }
 }
 
 .mini-flags { display: inline-flex !important; align-items: center; gap: 4px; }
 .mini-flags svg { width: 16px; height: 11px; border-radius: 2px; box-shadow: 0 0 0 1px var(--line); }
 .choice .ci svg { width: 26px; height: 18px; border-radius: 3px; box-shadow: 0 0 0 1px var(--line); display: block; }
 
-/* The top bar keeps the phone number and the staff link; the rest steps aside as the screen narrows. */
+/* The top bar prioritizes the phone number as the screen narrows. */
 @media (max-width: 1240px) { .topbar .hours { display: none; } }
 @media (max-width: 900px) { .topbar .hide-md { display: none; } }
 
@@ -1213,17 +1169,26 @@
   .values-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 960px) {
-  .brand-stage { padding-block: 8px 20px; }
-  .brand-plate { width: min(100%, 400px); }
-  .brand-plate .brand-mark { width: min(100%, 330px); }
+  .hero-grid-brand { gap: clamp(12px, 2.5svh, 24px); }
+  .brand-stage { padding: 0; }
+  .brand-plate { width: min(100%, clamp(175px, 32svh, 300px)); padding: clamp(14px, 2.4svh, 24px); }
+  .brand-plate .brand-mark { max-width: 100%; }
   .brand-stage .float-chip { display: none; }
   .hero-copy { text-align: left; }
   .dream-grid, .values-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-  .brand-plate .brand-mark { width: min(100%, 290px); }
   .dream-grid, .values-grid { grid-template-columns: minmax(0, 1fr); }
-  .hero .btn-row .btn { flex: 1 1 100%; }
+  .hero { --hero-space: clamp(12px, 2.5svh, 22px); }
+  .hero-grid-brand .brand-plate { width: min(100%, clamp(160px, 27svh, 220px)); }
+  .hero .btn-row { gap: 8px; }
+  .hero .btn-row .btn { flex: 1 1 auto; padding-inline: 12px; font-size: 0.9rem; }
+  .hero .hero-proof { gap: 6px 12px; font-size: 0.8rem; }
+  .hero .hero-proof svg { width: 16px; height: 16px; }
+}
+@media (350px <= width <= 640px) {
+  .hero .btn-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; }
+  .hero .btn-row .btn { white-space: normal; text-align: center; }
 }
 @media (max-width: 400px) {
   .display-1 { font-size: 2.3rem; }
@@ -1232,30 +1197,20 @@
   .display-2 { font-size: 1.85rem; }
 }
 
-/*
- * The landing hero on a desktop fits the screen: the logo, the headline, the sentence, the buttons
- * and the proof points are all visible without scrolling, on a tall monitor or a short laptop. Type,
- * logo and spacing scale with the height of the window as well as its width.
- */
+/* Scale the home hero with both viewport dimensions while allowing long copy to scroll. */
+.hero-grid-brand .display-1 { font-size: clamp(1.85rem, min(7.8vw, 7svh), 4.4rem); }
+.hero-grid-brand h1 { margin-block: clamp(8px, 1.8svh, 20px); }
+.hero-grid-brand .lead { font-size: clamp(0.95rem, min(1.5vw, 2.3svh), 1.15rem); line-height: 1.55; }
+.hero-grid-brand .btn-row { margin-top: clamp(12px, 3svh, 30px); }
+.hero-grid-brand .hero-proof { margin-top: clamp(10px, 2.4svh, 26px); }
+.hero-grid-brand .btn-lg { min-height: clamp(44px, 6.4svh, 56px); padding-block: clamp(8px, 1.6svh, 14px); }
+
 @media (min-width: 961px) {
-  .hero:has(.hero-grid-brand) {
-    /* 40px: the top bar and the menu's two hairlines. No cap, so a big monitor is filled too. */
-    min-height: calc(100svh - var(--header-h) - 40px);
-    display: flex;
-    align-items: center;
-    padding-block: clamp(20px, 3.5vh, 48px) clamp(92px, 12vh, 128px);
-  }
-  .hero:has(.hero-grid-brand) > .wrap { width: 100%; }
   .hero-grid-brand { align-items: center; gap: clamp(28px, 4vw, 64px); }
-  .hero-grid-brand .display-1 { font-size: clamp(2.3rem, min(4.6vw, 8.4vh), 4.4rem); }
-  .hero-grid-brand h1 { margin: clamp(10px, 1.8vh, 20px) 0; }
-  .hero-grid-brand .lead { font-size: clamp(0.98rem, min(1.25vw, 2.3vh), 1.15rem); line-height: 1.6; }
-  .hero-grid-brand .btn-row { margin-top: clamp(16px, 3vh, 30px); }
-  .hero-grid-brand .hero-proof { margin-top: clamp(12px, 2.4vh, 26px); }
-  .hero-grid-brand .btn-lg { min-height: clamp(46px, 6.4vh, 56px); }
+  .hero-grid-brand .display-1 { font-size: clamp(2rem, min(4.6vw, 8.4svh), 4.4rem); }
   .brand-stage { padding-block: 18px; }
   .brand-plate { padding: clamp(18px, 3.4vh, 40px) clamp(20px, 3vw, 40px) clamp(18px, 3vh, 34px); width: min(100%, 440px); }
-  .brand-plate .brand-mark { width: min(100%, 400px, 56vh); }
+  .brand-plate .brand-mark { max-width: min(100%, 400px, 56svh); }
 }
 
 /* The header phone number is in the top bar already; below 1480px it gives its room to Apply. */
